@@ -1,0 +1,148 @@
+---
+import { Sparkles, Instagram, Facebook, Linkedin, Mail } from "lucide-react";
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-secondary text-white pt-20 pb-10">
+    <div class="container mx-auto px-4 md:px-8">
+        <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 mb-20"
+        >
+            <!-- Brand -->
+            <div class="lg:col-span-4 flex flex-col items-start gap-6">
+                <a href="/" class="flex items-center gap-2">
+                    <span
+                        class="font-bold text-3xl tracking-tight text-white font-sans"
+                        >Home Cleaning & Co</span
+                    >
+                </a>
+                <p class="text-white/60 text-lg leading-relaxed max-w-xs">
+                    Reliable home services at your fingertips. Professional,
+                    vetted, and always on time.
+                </p>
+                <a
+                    href="mailto:help@withpronto.com"
+                    class="mt-4 inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full px-6 py-3 transition-all duration-300 group"
+                >
+                    <div
+                        class="bg-primary/20 p-2 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-colors"
+                    >
+                        <Mail className="w-5 h-5" />
+                    </div>
+                    <span class="font-medium">help@withpronto.com</span>
+                </a>
+            </div>
+
+            <!-- Links Spacer -->
+            <div class="hidden lg:block lg:col-span-2"></div>
+
+            <!-- Company -->
+            <div class="lg:col-span-2">
+                <h3 class="font-bold text-lg mb-6 text-white">Company</h3>
+                <ul class="space-y-4">
+                    <li>
+                        <a
+                            href="#about"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >About Us</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Careers</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Become a Pro</a
+                        >
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Support -->
+            <div class="lg:col-span-2">
+                <h3 class="font-bold text-lg mb-6 text-white">Support</h3>
+                <ul class="space-y-4">
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Contact Us</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Help Center</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Safety</a
+                        >
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Legal -->
+            <div class="lg:col-span-2">
+                <h3 class="font-bold text-lg mb-6 text-white">Legal</h3>
+                <ul class="space-y-4">
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Terms of Service</a
+                        >
+                    </li>
+                    <li>
+                        <a
+                            href="#"
+                            class="text-white/60 hover:text-primary transition-colors"
+                            >Privacy Policy</a
+                        >
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div
+            class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6"
+        >
+            <p class="text-white/40 text-sm font-medium">
+                © {currentYear} Pronto Home Services. All rights reserved.
+            </p>
+
+            <div class="flex items-center gap-4">
+                <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:bg-primary hover:text-white transition-all duration-300"
+                >
+                    <Linkedin className="w-5 h-5" />
+                </a>
+                <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:bg-primary hover:text-white transition-all duration-300"
+                >
+                    <Facebook className="w-5 h-5" />
+                </a>
+                <a
+                    href="#"
+                    class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/60 hover:bg-primary hover:text-white transition-all duration-300"
+                >
+                    <Instagram className="w-5 h-5" />
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>

@@ -1,0 +1,72 @@
+---
+import Section from "./ui/Section.astro";
+import { ChevronDown } from "lucide-react";
+
+const faqs = [
+    {
+        question: "Do you bring supplies and equipment?",
+        answer: "Yes — we bring our own supplies and standard equipment. You don't need to provide anything. If you prefer we use specific products (or avoid certain ingredients), just let us know in your quote request.",
+    },
+    {
+        question: "What are your hours?",
+        answer: "We're available 7am–8pm, Monday through Sunday.",
+    },
+    {
+        question: "What if I'm not satisfied?",
+        answer: "Let us know within 24 hours and we'll come back to re-clean the specific areas you mention.",
+    },
+    {
+        question: "Do I need to be home?",
+        answer: "No — many clients provide access instructions and come back to a spotless home.",
+    },
+    {
+        question: "How do you price cleanings?",
+        answer: "Pricing depends on bedrooms, bathrooms, and the home's condition. Request a quote and we'll confirm an accurate estimate quickly.",
+    },
+    {
+        question: "What's your reschedule or cancellation policy?",
+        answer: "If you need to reschedule, please give us as much notice as possible so we can adjust the schedule and serve everyone on time.",
+    },
+];
+---
+
+<Section id="faq" class="bg-surface py-16 md:py-24">
+    <div class="max-w-3xl mx-auto px-4">
+        <div class="text-center mb-16">
+            <span
+                class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4"
+                >Common Questions</span
+            >
+            <h2
+                class="text-4xl md:text-5xl font-bold text-secondary mb-6 font-sans tracking-tight"
+            >
+                Frequently Asked <span class="text-primary">Questions</span>
+            </h2>
+            <p class="text-text-600 text-lg">
+                Quick answers to common questions.
+            </p>
+        </div>
+
+        <div class="space-y-4">
+            {
+                faqs.map((faq, index) => (
+                    <div class="bg-white rounded-2xl shadow-md border border-border overflow-hidden transition-all duration-300 hover:shadow-lg group">
+                        <details class="group w-full">
+                            <summary class="flex items-center justify-between p-6 cursor-pointer list-none">
+                                <h3 class="text-lg font-bold text-text-900 pr-8">
+                                    {faq.question}
+                                </h3>
+                                <span class="text-primary transition-transform duration-300 group-open:rotate-180">
+                                    <ChevronDown className="w-5 h-5" />
+                                </span>
+                            </summary>
+                            <div class="px-6 pb-6 text-text-600 leading-relaxed">
+                                {faq.answer}
+                            </div>
+                        </details>
+                    </div>
+                ))
+            }
+        </div>
+    </div>
+</Section>
