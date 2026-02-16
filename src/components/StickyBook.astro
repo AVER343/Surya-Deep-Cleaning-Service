@@ -4,7 +4,7 @@
 
 <div
     id="sticky-book"
-    class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-secondary/10 px-4 py-4 md:hidden transform translate-y-full transition-transform duration-300 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"
+    class="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-secondary/10 px-4 py-4 lg:hidden transform translate-y-full transition-transform duration-300 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)]"
 >
     <div class="flex items-center justify-between gap-4 max-w-sm mx-auto">
         <div class="flex flex-col">
@@ -26,28 +26,38 @@
 
 <script>
     const stickyBook = document.getElementById("sticky-book");
-    const heroSection = document.getElementById("hero"); // Assuming Hero has id="hero"
+    const heroSection = document.getElementById("hero");
+    const quoteSection = document.getElementById("quote");
 
-    if (stickyBook && heroSection) {
+    if (stickyBook) {
+        let isHeroVisible = true; // Assume visible initially
+        let isQuoteVisible = false;
+
+        const updateStickyVisibility = () => {
+            // Show ONLY if Hero is NOT visible AND Quote is NOT visible
+            if (!isHeroVisible && !isQuoteVisible) {
+                stickyBook.classList.remove("translate-y-full");
+            } else {
+                stickyBook.classList.add("translate-y-full");
+            }
+        };
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
-                    // Show sticky bar when Hero is NOT intersecting (scrolled past)
-                    if (!entry.isIntersecting) {
-                        stickyBook.classList.remove("translate-y-full");
-                    } else {
-                        stickyBook.classList.add("translate-y-full");
+                    if (entry.target === heroSection) {
+                        isHeroVisible = entry.isIntersecting;
+                    }
+                    if (entry.target === quoteSection) {
+                        isQuoteVisible = entry.isIntersecting;
                     }
                 });
+                updateStickyVisibility();
             },
-            { threshold: 0 },
+            { threshold: 0.1 }, // Trigger when even a small part is visible
         );
 
-        observer.observe(heroSection);
-    } else if (stickyBook) {
-        // Fallback if no hero ID found, show after a delay
-        setTimeout(() => {
-            stickyBook.classList.remove("translate-y-full");
-        }, 3000);
+        if (heroSection) observer.observe(heroSection);
+        if (quoteSection) observer.observe(quoteSection);
     }
 </script>

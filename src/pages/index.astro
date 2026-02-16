@@ -143,3 +143,29 @@ import { Check } from "lucide-react";
 
 	<Footer />
 </Layout>
+
+<script>
+	// Scroll Spy to update URL hash
+	const sections = document.querySelectorAll("section[id], div[id='quote']");
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute("id");
+					if (id && id !== "hero") {
+						// Don't hash active for hero usually to keep URL clean, or do if preferred.
+						// Use replaceState to avoid cluttering history stack
+						history.replaceState(null, null, `#${id}`);
+					} else if (id === "hero") {
+						// Optional: Clear hash when back at top
+						history.replaceState(null, null, " ");
+					}
+				}
+			});
+		},
+		{ threshold: 0.5 }, // Update when 50% of the section is visible
+	);
+
+	sections.forEach((section) => observer.observe(section));
+</script>
