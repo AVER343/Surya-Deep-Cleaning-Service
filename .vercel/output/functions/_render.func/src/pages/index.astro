@@ -1,0 +1,171 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import About from "../components/About.astro";
+import Services from "../components/Services.astro";
+import Testimonials from "../components/Testimonials.astro";
+import StickyBook from "../components/StickyBook.astro";
+import Areas from "../components/Areas.astro";
+import FAQ from "../components/FAQ.astro";
+import Footer from "../components/Footer.astro";
+import BookingForm from "../components/BookingForm";
+import Section from "../components/ui/Section.astro";
+import { Check } from "lucide-react";
+---
+
+<Layout
+	title="Home Cleaning & Co | Best Cleaning Service in St. Petersburg, FL"
+>
+	<Fragment slot="head">
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "HomeAndConstructionBusiness",
+				"name": "Home Cleaning & Co",
+				"image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a",
+				"@id": "https://homecleaningco.com",
+				"url": "https://homecleaningco.com",
+				"telephone": "+15550000000",
+				"address": {
+					"@type": "PostalAddress",
+					"streetAddress": "123 Main St",
+					"addressLocality": "St. Petersburg",
+					"addressRegion": "FL",
+					"postalCode": "33701",
+					"addressCountry": "US"
+				},
+				"geo": {
+					"@type": "GeoCoordinates",
+					"latitude": 27.7676,
+					"longitude": -82.6403
+				},
+				"openingHoursSpecification": {
+					"@type": "OpeningHoursSpecification",
+					"dayOfWeek": [
+						"Monday",
+						"Tuesday",
+						"Wednesday",
+						"Thursday",
+						"Friday"
+					],
+					"opens": "08:00",
+					"closes": "18:00"
+				},
+				"priceRange": "$$"
+			}
+		</script>
+	</Fragment>
+
+	<Header />
+
+	<main>
+		<Hero />
+		<StickyBook />
+		<About />
+		<Services />
+		<Testimonials />
+		<Areas />
+		<FAQ />
+
+		<Section
+			id="quote"
+			class="bg-background-mint/30 relative overflow-hidden py-24"
+		>
+			<!-- Decorative Background Pattern -->
+			<div
+				class="absolute inset-0 opacity-10 pointer-events-none"
+				style="background-image: radial-gradient(#A0E8AF 2px, transparent 2px); background-size: 32px 32px;"
+			>
+			</div>
+
+			<div
+				class="flex flex-col items-center relative z-10 max-w-4xl mx-auto text-center"
+			>
+				<span
+					class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-surface border border-border-light px-4 py-1.5 rounded-full mb-4"
+					>Get Started</span
+				>
+				<h2
+					class="text-4xl md:text-5xl font-bold text-text-900 mb-6 font-sans leading-tight"
+				>
+					Ready for a <span class="text-primary">Spotless Home?</span>
+				</h2>
+				<p
+					class="text-text-600 text-lg mb-10 max-w-2xl mx-auto leading-relaxed"
+				>
+					Tell us a bit about your home and your cleaning needs. We’ll
+					get back to you with a personalized quote within 24 hours.
+					No hidden fees, just honest pricing.
+				</p>
+
+				<ul
+					class="flex flex-wrap justify-center gap-4 md:gap-8 mb-12 text-text-700 font-medium"
+				>
+					<li
+						class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-primary/20"
+					>
+						<span
+							class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"
+						>
+							<Check className="w-3 h-3" />
+						</span>
+						Eco-friendly products
+					</li>
+					<li
+						class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-primary/20"
+					>
+						<span
+							class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"
+						>
+							<Check className="w-3 h-3" />
+						</span>
+						Bonded & insured
+					</li>
+					<li
+						class="flex items-center gap-2 bg-white px-4 py-2 rounded-full shadow-sm border border-primary/20"
+					>
+						<span
+							class="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center text-primary shrink-0"
+						>
+							<Check className="w-3 h-3" />
+						</span>
+						Satisfaction Guarantee
+					</li>
+				</ul>
+
+				<div class="w-full max-w-xl mx-auto text-left">
+					<BookingForm client:visible />
+				</div>
+			</div>
+		</Section>
+	</main>
+
+	<Footer />
+</Layout>
+
+<script>
+	// Scroll Spy to update URL hash
+	const sections = document.querySelectorAll("section[id], div[id='quote']");
+
+	const observer = new IntersectionObserver(
+		(entries) => {
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					const id = entry.target.getAttribute("id");
+					if (id && id !== "hero") {
+						// Don't hash active for hero usually to keep URL clean, or do if preferred.
+						// Use replaceState to avoid cluttering history stack
+						history.replaceState(null, null, `#${id}`);
+					} else if (id === "hero") {
+						// Optional: Clear hash when back at top
+						history.replaceState(null, null, " ");
+					}
+				}
+			});
+		},
+		{ threshold: 0.5 }, // Update when 50% of the section is visible
+	);
+
+	sections.forEach((section) => observer.observe(section));
+</script>
