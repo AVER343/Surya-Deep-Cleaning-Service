@@ -1,18 +1,16 @@
 
 import type { APIRoute } from 'astro';
 import { db } from '../../db';
-import { locations, pricing } from '../../db/schema';
+import { locations } from '../../db/schema';
+import { isNull } from 'drizzle-orm';
 
 export const prerender = false;
 
 export const GET: APIRoute = async () => {
     try {
-        const [placesData, pricingData] = await Promise.all([
-            db.select().from(locations),
-            db.select().from(pricing),
-        ]);
+        const placesData = await db.select().from(locations).where(isNull(locations.deletedAt));
 
-        return new Response(JSON.stringify({ places: placesData, pricing: pricingData }), {
+        return new Response(JSON.stringify({ places: placesData, pricing: [] }), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json'
