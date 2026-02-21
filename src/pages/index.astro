@@ -18,43 +18,191 @@ import { Check } from "lucide-react";
 	title="Home Cleaning & Co | Best Cleaning Service in St. Petersburg, FL"
 >
 	<Fragment slot="head">
-		<script type="application/ld+json">
-			{
-				"@context": "https://schema.org",
-				"@type": "HomeAndConstructionBusiness",
-				"name": "Home Cleaning & Co",
-				"image": "https://images.unsplash.com/photo-1584622650111-993a426fbf0a",
-				"@id": "https://homecleaningco.com",
-				"url": "https://homecleaningco.com",
-				"telephone": "+15550000000",
-				"address": {
-					"@type": "PostalAddress",
-					"streetAddress": "123 Main St",
-					"addressLocality": "St. Petersburg",
-					"addressRegion": "FL",
-					"postalCode": "33701",
-					"addressCountry": "US"
-				},
-				"geo": {
-					"@type": "GeoCoordinates",
-					"latitude": 27.7676,
-					"longitude": -82.6403
-				},
-				"openingHoursSpecification": {
-					"@type": "OpeningHoursSpecification",
-					"dayOfWeek": [
-						"Monday",
-						"Tuesday",
-						"Wednesday",
-						"Thursday",
-						"Friday"
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify([
+				{
+					"@context": "https://schema.org",
+					"@type": "LocalBusiness",
+					"@id": "https://homecleaningco.com/#business",
+					name: "Home Cleaning & Co",
+					image: "https://homecleaningco.com/images/hero-clean-home.jpg",
+					url: "https://homecleaningco.com",
+					telephone: "+19543933479",
+					email: "support@homecleaningco.com",
+					address: {
+						"@type": "PostalAddress",
+						addressLocality: "St. Petersburg",
+						addressRegion: "FL",
+						postalCode: "33701",
+						addressCountry: "US",
+					},
+					geo: {
+						"@type": "GeoCoordinates",
+						latitude: 27.7676,
+						longitude: -82.6403,
+					},
+					areaServed: [
+						{ "@type": "City", name: "St. Petersburg" },
+						{ "@type": "City", name: "South Pasadena" },
+						{ "@type": "City", name: "Pinellas Park" },
+						{ "@type": "City", name: "Kenneth City" },
+						{ "@type": "City", name: "Gulfport" },
+						{ "@type": "City", name: "Seminole" },
+						{ "@type": "City", name: "Treasure Island" },
+						{ "@type": "City", name: "Madeira Beach" },
+						{ "@type": "City", name: "Bay Pines" },
 					],
-					"opens": "08:00",
-					"closes": "18:00"
+					openingHoursSpecification: {
+						"@type": "OpeningHoursSpecification",
+						dayOfWeek: [
+							"Monday",
+							"Tuesday",
+							"Wednesday",
+							"Thursday",
+							"Friday",
+							"Saturday",
+							"Sunday",
+						],
+						opens: "07:00",
+						closes: "20:00",
+					},
+					priceRange: "$$",
+					aggregateRating: {
+						"@type": "AggregateRating",
+						ratingValue: "5.0",
+						reviewCount: "9",
+						bestRating: "5",
+					},
+					hasOfferCatalog: {
+						"@type": "OfferCatalog",
+						name: "Cleaning Services",
+						itemListElement: [
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Regular Maintenance Cleaning",
+									description:
+										"Recurring house cleaning to keep your home consistently fresh and tidy.",
+								},
+							},
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Deep Cleaning",
+									description:
+										"Thorough top-to-bottom cleaning for a deeper level of clean.",
+								},
+							},
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Move-In / Move-Out Cleaning",
+									description:
+										"Complete cleaning for vacant properties during transitions.",
+								},
+							},
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Airbnb Turnover Cleaning",
+									description:
+										"Fast, reliable cleaning between guests for short-term rentals.",
+								},
+							},
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Post-Construction Cleaning",
+									description:
+										"Dust, debris, and residue removal after renovations or new builds.",
+								},
+							},
+							{
+								"@type": "Offer",
+								itemOffered: {
+									"@type": "Service",
+									name: "Office Cleaning",
+									description:
+										"Professional workspace cleaning to maintain a healthy, productive office.",
+								},
+							},
+						],
+					},
 				},
-				"priceRange": "$$"
-			}
-		</script>
+				{
+					"@context": "https://schema.org",
+					"@type": "FAQPage",
+					mainEntity: [
+						{
+							"@type": "Question",
+							name: "Do you bring supplies and equipment?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Yes — we bring our own supplies and standard equipment. You don't need to provide anything. If you prefer we use specific products (or avoid certain ingredients), just let us know in your quote request.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "What are your hours?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "We're available 7am–8pm, Monday through Sunday.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "What if I'm not satisfied?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Let us know within 24 hours and we'll come back to re-clean the specific areas you mention.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "Do I need to be home?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "No — many clients provide access instructions and come back to a spotless home.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "How do you price cleanings?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "Pricing depends on bedrooms, bathrooms, and the home's condition. Request a quote and we'll confirm an accurate estimate quickly.",
+							},
+						},
+						{
+							"@type": "Question",
+							name: "What's your reschedule or cancellation policy?",
+							acceptedAnswer: {
+								"@type": "Answer",
+								text: "If you need to reschedule, please give us as much notice as possible so we can adjust the schedule and serve everyone on time.",
+							},
+						},
+					],
+				},
+				{
+					"@context": "https://schema.org",
+					"@type": "BreadcrumbList",
+					itemListElement: [
+						{
+							"@type": "ListItem",
+							position: 1,
+							name: "Home",
+							item: "https://homecleaningco.com/",
+						},
+					],
+				},
+			])}
+		/>
 	</Fragment>
 
 	<Header />

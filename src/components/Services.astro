@@ -5,10 +5,12 @@ const services = [
     {
         title: "Regular Maintenance",
         image: "/images/services/regular-maintenance.png",
+        popular: true,
     },
     {
         title: "Deep Cleaning",
         image: "/images/services/deep-cleaning.png",
+        popular: true,
     },
     {
         title: "Move-In / Move-Out",
@@ -62,6 +64,11 @@ const allServices = [...services, ...services];
                             loading="lazy"
                         />
                         <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                        {service.popular && (
+                            <span class="absolute top-3 right-3 bg-primary text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow-lg">
+                                ★ Most Popular
+                            </span>
+                        )}
                     </div>
 
                     <!-- Title Below -->
@@ -83,19 +90,24 @@ const allServices = [...services, ...services];
             {
                 allServices.map((service) => (
                     <div class="flex-none px-4">
-                        <div class="w-[350px] flex flex-col items-center group/card">
+                        <div class="w-[295px] flex flex-col items-center group/card">
                             <!-- Image Card -->
-                            <div class="w-full aspect-[3/4] rounded-[2.5rem] overflow-hidden shadow-lg relative">
+                            <div class="w-full aspect-[3/5] rounded-[2rem] overflow-hidden shadow-lg relative">
                                 <img
                                     src={service.image}
                                     alt={service.title}
                                     class="w-full h-full object-cover"
                                 />
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                                {service.popular && (
+                                    <span class="absolute top-4 right-4 bg-primary text-white text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full shadow-lg">
+                                        ★ Most Popular
+                                    </span>
+                                )}
                             </div>
 
                             <!-- Title Below -->
-                            <h3 class="mt-8 text-3xl font-bold text-secondary text-center tracking-tight">
+                            <h3 class="mt-5 text-xl font-bold text-secondary text-center tracking-tight">
                                 {service.title}
                             </h3>
                         </div>
