@@ -1,6 +1,7 @@
 ---
 import "../styles/global.css";
 import "@fontsource/lexend";
+import Analytics from "@vercel/analytics/astro";
 
 interface Props {
 	title: string;
@@ -75,5 +76,6 @@ const absoluteImageURL = new URL(image, Astro.site).href;
 		class="bg-background text-text font-sans antialiased selection:bg-primary selection:text-white"
 	>
 		<slot />
+		<Analytics />
 	</body>
 </html>
