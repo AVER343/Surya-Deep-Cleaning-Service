@@ -1,0 +1,148 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import Section from "../components/ui/Section.astro";
+import { LOCATION_CONTENT } from "../content/locations";
+import { ArrowRight, Mail, Phone } from "lucide-react";
+
+const hours = [
+    "Monday - Sunday",
+    "7:00 AM - 8:00 PM",
+];
+---
+
+<Layout
+    title="Contact Home Cleaning & Co | St. Petersburg, FL"
+    description="Call or email Home Cleaning & Co for booking help, service recommendations, and scheduling support across our service areas."
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "LocalBusiness",
+                    name: "Home Cleaning & Co",
+                    telephone: "+19543933479",
+                    email: "support@homecleaningco.com",
+                    areaServed: LOCATION_CONTENT.map((location) => ({
+                        "@type": "City",
+                        name: location.name,
+                    })),
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "ContactPage",
+                    name: "Contact Home Cleaning & Co",
+                    url: "https://homecleaningco.com/contact",
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Contact",
+                            item: "https://homecleaningco.com/contact",
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="bg-background-mint pt-36 pb-20 md:pt-40 md:pb-24">
+            <div class="max-w-3xl mx-auto text-center">
+                <span class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-[0.2em] uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4">
+                    Contact
+                </span>
+                <h1 class="h1-tier-2 font-bold text-secondary mb-6">
+                    Talk to Us Before You Book
+                </h1>
+                <p class="text-text-600 text-lg leading-relaxed max-w-2xl mx-auto">
+                    Use phone or email for schedule help, service recommendations, or any questions before you start the booking flow.
+                </p>
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="rounded-[2rem] border border-border-light bg-background-mint p-6 md:p-8 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white border border-border-light flex items-center justify-center text-primary">
+                            <Phone className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500">Phone</p>
+                            <a href="tel:9543933479" class="text-xl font-bold text-secondary hover:text-primary transition-colors">
+                                (954) 393-3479
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-text-600 leading-relaxed">Best for immediate scheduling help, booking questions, and custom service recommendations.</p>
+                </div>
+
+                <div class="rounded-[2rem] border border-border-light bg-background-mint p-6 md:p-8 shadow-sm">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-white border border-border-light flex items-center justify-center text-primary">
+                            <Mail className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500">Email</p>
+                            <a href="mailto:support@homecleaningco.com" class="text-xl font-bold text-secondary hover:text-primary transition-colors break-all">
+                                support@homecleaningco.com
+                            </a>
+                        </div>
+                    </div>
+                    <p class="text-text-600 leading-relaxed">Best for service questions, follow-up details, and general support outside the booking form.</p>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-background-mint py-20 md:py-24">
+            <div class="grid lg:grid-cols-[0.95fr_1.05fr] gap-8 items-start">
+                <div class="rounded-[2rem] border border-border-light bg-white p-6 md:p-8 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">Hours</p>
+                    <ul class="space-y-2 text-text-700 font-medium">
+                        {hours.map((line) => <li>{line}</li>)}
+                    </ul>
+                    <div class="mt-8 flex flex-wrap gap-3">
+                        <a href="/book" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                            Book Now
+                            <ArrowRight className="w-5 h-5" />
+                        </a>
+                        <a href="/faq" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
+                            View FAQ
+                        </a>
+                    </div>
+                </div>
+
+                <div class="rounded-[2rem] border border-border-light bg-white p-6 md:p-8 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">Cities Served</p>
+                    <div class="flex flex-wrap gap-2">
+                        {
+                            LOCATION_CONTENT.map((location) => (
+                                <a href={`/locations/${location.slug}`} class="inline-flex items-center rounded-full bg-background-mint border border-border-light px-3 py-1.5 text-sm font-medium text-text-600 hover:border-primary/30 hover:text-primary transition-colors">
+                                    {location.name}
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+        </Section>
+    </main>
+
+    <Footer />
+</Layout>

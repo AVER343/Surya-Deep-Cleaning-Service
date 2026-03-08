@@ -1,0 +1,90 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import FAQ from "../components/FAQ.astro";
+import Section from "../components/ui/Section.astro";
+import { GLOBAL_FAQS } from "../content/faqs";
+import { ArrowRight } from "lucide-react";
+---
+
+<Layout
+    title="FAQ | Home Cleaning & Co St. Petersburg, FL"
+    description="Get answers about scheduling, cleaning supplies, pricing, service guarantees, and cancellation policies."
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: GLOBAL_FAQS.map((faq) => ({
+                        "@type": "Question",
+                        name: faq.question,
+                        acceptedAnswer: {
+                            "@type": "Answer",
+                            text: faq.answer,
+                        },
+                    })),
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "FAQ",
+                            item: "https://homecleaningco.com/faq",
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="bg-background-mint pt-36 pb-8 md:pt-40">
+            <div class="max-w-3xl mx-auto text-center">
+                <span
+                    class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4"
+                    >Support</span
+                >
+                <h1
+                    class="text-4xl md:text-5xl font-bold text-secondary mb-6 tracking-tight"
+                >
+                    Frequently Asked Questions
+                </h1>
+                <p class="text-text-600 text-lg leading-relaxed">
+                    Everything clients commonly ask about booking, service
+                    expectations, and policies.
+                </p>
+            </div>
+        </Section>
+
+        <FAQ variant="full" showHeader={false} />
+
+        <Section class="bg-background-mint py-4 md:py-12">
+            <div class="text-center">
+                <a
+                    href="/book"
+                    class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300"
+                >
+                    Start Booking
+                    <ArrowRight className="w-5 h-5" />
+                </a>
+            </div>
+        </Section>
+    </main>
+
+    <Footer />
+</Layout>

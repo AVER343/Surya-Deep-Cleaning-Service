@@ -1,0 +1,492 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Header from "../../../components/Header.astro";
+import Footer from "../../../components/Footer.astro";
+import Section from "../../../components/ui/Section.astro";
+import { LOCATION_CONTENT, getLocationBySlug } from "../../../content/locations";
+import { SERVICE_CONTENT, getServiceBySlug } from "../../../content/services";
+import {
+    formatUsd,
+    getAvailableCitiesForService,
+    getAvailableServicesForLocation,
+    getBookingLocationIdsForSeoLocation,
+    getStartingPriceForService,
+} from "../../../lib/catalog";
+import { getImageAlt } from "../../../lib/seo/get-image-alt";
+import { ArrowRight, CheckCircle2, Phone } from "lucide-react";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+    return SERVICE_CONTENT.flatMap((service) =>
+        LOCATION_CONTENT.map((location) => ({
+            params: {
+                service: service.slug,
+                city: location.slug,
+            },
+        })),
+    );
+}
+
+const service = getServiceBySlug(Astro.params.service);
+const location = getLocationBySlug(Astro.params.city);
+
+if (!service || !location) {
+    throw new Error(`Unknown service/city route: ${Astro.params.service}/${Astro.params.city}`);
+}
+
+const locationIds = getBookingLocationIdsForSeoLocation(location);
+const startingPrice = getStartingPriceForService(service.id, locationIds);
+const bookHref = `/book?service=${service.slug}&location=${location.slug}`;
+const serviceGallery = service.galleryImages?.length > 0 ? service.galleryImages : [service.image];
+const relatedServices = getAvailableServicesForLocation(location.slug)
+    .filter((entry) => entry.service.slug !== service.slug)
+    .slice(0, 3);
+const relatedCities = getAvailableCitiesForService(service.slug)
+    .filter((entry) => entry.location.slug !== location.slug)
+    .slice(0, 4);
+const serviceImage = new URL(serviceGallery[0], Astro.site).href;
+const cityFaqs = service.faq.slice(0, 3);
+const servicePath = `/services/${service.slug}`;
+const locationPath = `/locations/${location.slug}`;
+---
+
+<Layout
+    title={`${service.name} in ${location.name}, ${location.stateCode} | Home Cleaning & Co`}
+    description={`${service.shortDescription} Book ${service.name.toLowerCase()} in ${location.name}, ${location.stateCode} with transparent pricing, local coverage details, and easy online scheduling.`}
+    image={service.image}
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "LocalBusiness",
+                    name: "Home Cleaning & Co",
+                    url: `https://homecleaningco.com/services/${service.slug}/${location.slug}`,
+                    telephone: "+19543933479",
+                    areaServed: {
+                        "@type": "City",
+                        name: location.name,
+                    },
+                    image: serviceImage,
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Service",
+                    name: `${service.name} in ${location.name}`,
+                    description: `${service.shortDescription} Serving ${location.name}, ${location.stateCode}.`,
+                    areaServed: {
+                        "@type": "City",
+                        name: location.name,
+                    },
+                    provider: {
+                        "@type": "LocalBusiness",
+                        name: "Home Cleaning & Co",
+                        telephone: "+19543933479",
+                    },
+                    offers: {
+                        "@type": "Offer",
+                        priceCurrency: "USD",
+                        price: startingPrice,
+                        description: service.pricingNote,
+                    },
+                    url: `https://homecleaningco.com/services/${service.slug}/${location.slug}`,
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: cityFaqs.map((item) => ({
+                        "@type": "Question",
+                        name: item.question,
+                        acceptedAnswer: {
+                            "@type": "Answer",
+                            text: item.answer,
+                        },
+                    })),
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Services",
+                            item: "https://homecleaningco.com/services",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 3,
+                            name: service.name,
+                            item: `https://homecleaningco.com/services/${service.slug}`,
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 4,
+                            name: location.name,
+                            item: `https://homecleaningco.com/services/${service.slug}/${location.slug}`,
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="relative overflow-hidden bg-background-mint pt-36 pb-20 md:pt-44 md:pb-24">
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute top-4 right-[10%] h-60 w-60 rounded-full bg-primary/10 blur-3xl"></div>
+                <div class="absolute bottom-0 left-[6%] h-52 w-52 rounded-full bg-secondary/5 blur-3xl"></div>
+            </div>
+
+            <div class="relative z-10 grid lg:grid-cols-[0.82fr_1.18fr] gap-10 xl:gap-14 items-start">
+                <div class="animate-fade-in-up lg:pt-4">
+                    <span class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-[0.2em] uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4">
+                        {service.hero.eyebrow}
+                    </span>
+                    <h1 class="h1-tier-3 font-bold text-secondary mb-5 max-w-[14ch]">
+                        {service.name} in {location.name}, {location.stateCode}
+                    </h1>
+                    <p class="text-base md:text-lg text-text-600 leading-relaxed mb-6 max-w-xl">
+                        Our professional {service.name.toLowerCase()} service in {location.name} helps homeowners stay ahead of buildup, busy schedules, and service-day stress with a clear checklist and reliable arrival windows.
+                    </p>
+
+                    <div class="rounded-[1.75rem] border border-border-light bg-white p-5 md:p-6 shadow-sm mb-8">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-2">
+                            Starting At
+                        </p>
+                        <p class="text-3xl font-bold text-secondary mb-2">
+                            {formatUsd(startingPrice)}
+                        </p>
+                        <p class="text-sm text-text-600 leading-relaxed">
+                            {service.pricingNote}
+                        </p>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 mb-8">
+                        <a href={bookHref} class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-xl shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                            Book Now
+                            <ArrowRight className="w-5 h-5" />
+                        </a>
+                        <a href="/contact" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
+                            Get Free Quote
+                        </a>
+                        <a href="tel:9543933479" class="inline-flex items-center gap-2 text-secondary font-semibold px-2 py-3">
+                            <Phone className="w-4 h-4" />
+                            Call Now
+                        </a>
+                    </div>
+
+                    <ul class="grid gap-3 sm:grid-cols-3">
+                        {
+                            service.heroHighlights.map((highlight) => (
+                                <li class="rounded-2xl border border-border-light bg-white px-4 py-4 text-sm font-medium text-secondary leading-relaxed">
+                                    {highlight}
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </div>
+
+                <div class="animate-fade-in-up delay-100">
+                    <div class="rounded-[2rem] overflow-hidden border border-border-light bg-white shadow-[0_24px_80px_rgba(12,12,12,0.10)]">
+                        <div class="relative h-[420px] md:h-[500px] overflow-hidden">
+                            {
+                                serviceGallery.map((imageSrc, index) => (
+                                    <img
+                                        src={imageSrc}
+                                        alt={getImageAlt(service, location, index)}
+                                        class={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${index === 0 ? "opacity-100" : "opacity-0"}`}
+                                        loading={index === 0 ? "eager" : "lazy"}
+                                        data-city-slide
+                                    />
+                                ))
+                            }
+                            <div class="absolute inset-0 bg-gradient-to-t from-secondary/60 via-secondary/10 to-transparent"></div>
+                            <div class="absolute left-5 right-5 bottom-5 flex items-end justify-between gap-4">
+                                <div class="rounded-2xl bg-white/92 backdrop-blur px-4 py-3 border border-white/60 shadow-lg">
+                                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-text-500 mb-1">
+                                        Local Coverage
+                                    </p>
+                                    <p class="text-sm font-semibold text-secondary">
+                                        {location.name}, {location.stateCode}
+                                    </p>
+                                </div>
+                                <a href={locationPath} class="inline-flex items-center gap-2 rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-secondary shadow-md">
+                                    View City
+                                    <ArrowRight className="w-4 h-4" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-3 p-4 border-t border-border-light bg-surface/60">
+                            {
+                                serviceGallery.map((imageSrc, index) => (
+                                    <button
+                                        type="button"
+                                        class={`group relative overflow-hidden rounded-[1.1rem] border bg-white transition-all duration-300 ${index === 0 ? "border-primary shadow-lg shadow-primary/10" : "border-border-light hover:border-primary/30"}`}
+                                        aria-label={`Preview ${service.name} in ${location.name} image ${index + 1}`}
+                                        aria-pressed={index === 0 ? "true" : "false"}
+                                        data-city-thumb
+                                        data-gallery-index={index}
+                                    >
+                                        <img src={imageSrc} alt={getImageAlt(service, location, index)} class="h-20 w-full object-cover" loading="lazy" />
+                                        <div class="absolute inset-0 bg-gradient-to-t from-secondary/70 via-secondary/15 to-transparent"></div>
+                                    </button>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-start">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-5">
+                        What's Included in {service.name}
+                    </h2>
+                    <p class="text-text-600 text-lg leading-relaxed mb-8">
+                        Each visit follows the same high-standard checklist we use for {location.name} clients who need dependable results and transparent service expectations.
+                    </p>
+                    <ul class="space-y-4">
+                        {
+                            service.includes.map((item) => (
+                                <li class="flex items-start gap-3">
+                                    <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 shrink-0" />
+                                    <span class="text-text-700 leading-relaxed">{item}</span>
+                                </li>
+                            ))
+                        }
+                    </ul>
+                </div>
+
+                <div class="rounded-[2rem] border border-border-light bg-background-mint p-6 md:p-8">
+                    <p class="text-sm uppercase tracking-[0.18em] font-bold text-primary mb-3">
+                        Service Area Coverage
+                    </p>
+                    <h3 class="text-2xl font-bold text-secondary mb-4">
+                        Serving {location.name} and Nearby Neighborhoods
+                    </h3>
+                    <p class="text-text-600 leading-relaxed mb-6">
+                        {location.coverageCopy}
+                    </p>
+                    <div class="mb-6">
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                            Neighborhoods
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            {
+                                location.neighborhoods.map((neighborhood) => (
+                                    <span class="inline-flex items-center rounded-full bg-white border border-border-light px-3 py-1.5 text-sm text-text-600">
+                                        {neighborhood}
+                                    </span>
+                                ))
+                            }
+                        </div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                            Nearby Areas
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            {
+                                location.nearbyAreas.map((area) => (
+                                    <span class="inline-flex items-center rounded-full bg-white border border-border-light px-3 py-1.5 text-sm text-text-600">
+                                        {area}
+                                    </span>
+                                ))
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-background-mint py-20 md:py-24">
+            <div class="rounded-[2rem] border border-border-light bg-white p-8 md:p-10 shadow-sm text-center">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                    Why Choose Us in {location.name}
+                </p>
+                <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                    Built for Local Scheduling, Reliable Arrival Windows, and Clear Pricing
+                </h2>
+                <p class="text-text-600 max-w-3xl mx-auto leading-relaxed mb-6">
+                    We keep the process simple for {location.name} clients: clear starting prices, easy online booking, and a team that follows the same checklist-driven standard on every visit.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <a href={bookHref} class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                        Book This Service
+                        <ArrowRight className="w-5 h-5" />
+                    </a>
+                    <a href={servicePath} class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
+                        View Service Overview
+                    </a>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="max-w-3xl mx-auto">
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                        {service.name} in {location.name} FAQ
+                    </h2>
+                    <p class="text-text-600 text-lg">
+                        {location.faqIntro}
+                    </p>
+                </div>
+                <div class="space-y-4">
+                    {
+                        cityFaqs.map((item) => (
+                            <details class="group bg-background-mint rounded-2xl border border-border-light p-6 transition-shadow hover:shadow-md">
+                                <summary class="cursor-pointer list-none font-bold text-secondary pr-8 relative">
+                                    {item.question}
+                                    <span class="absolute right-0 top-0 text-primary transition-transform group-open:rotate-45">+</span>
+                                </summary>
+                                <p class="mt-4 text-text-600 leading-relaxed">{item.answer}</p>
+                            </details>
+                        ))
+                    }
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-background-mint py-20 md:py-24">
+            <div class="grid lg:grid-cols-2 gap-8">
+                <div class="rounded-[2rem] border border-border-light bg-white p-6 md:p-8 shadow-sm">
+                    <div class="flex items-end justify-between gap-4 mb-6">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-2">Related Services</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-secondary">More Cleaning Options in {location.name}</h2>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        {
+                            relatedServices.map(({ service: relatedService, startingPrice: relatedPrice }) => (
+                                <a href={`/services/${relatedService.slug}/${location.slug}`} class="block rounded-2xl border border-border-light bg-background-mint px-5 py-4 hover:border-primary/30 hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div>
+                                            <p class="font-bold text-secondary">{relatedService.name}</p>
+                                            <p class="text-sm text-text-600">Starting at {formatUsd(relatedPrice)}</p>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 text-primary shrink-0" />
+                                    </div>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+
+                <div class="rounded-[2rem] border border-border-light bg-white p-6 md:p-8 shadow-sm">
+                    <div class="flex items-end justify-between gap-4 mb-6">
+                        <div>
+                            <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-2">Related Cities</p>
+                            <h2 class="text-2xl md:text-3xl font-bold text-secondary">{service.name} in Nearby Service Areas</h2>
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        {
+                            relatedCities.map(({ location: relatedLocation, startingPrice: relatedPrice }) => (
+                                <a href={`/services/${service.slug}/${relatedLocation.slug}`} class="block rounded-2xl border border-border-light bg-background-mint px-5 py-4 hover:border-primary/30 hover:shadow-md transition-all">
+                                    <div class="flex items-center justify-between gap-4">
+                                        <div>
+                                            <p class="font-bold text-secondary">{relatedLocation.name}, {relatedLocation.stateCode}</p>
+                                            <p class="text-sm text-text-600">Starting at {formatUsd(relatedPrice)}</p>
+                                        </div>
+                                        <ArrowRight className="w-4 h-4 text-primary shrink-0" />
+                                    </div>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="rounded-[2rem] border border-border-light bg-secondary text-white p-8 md:p-10 shadow-sm mt-8 text-center">
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/60 mb-3">
+                    Book {service.name} in {location.name}
+                </p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">
+                    Ready to lock in your preferred date?
+                </h2>
+                <p class="text-white/75 max-w-2xl mx-auto leading-relaxed mb-6">
+                    Start online, review the live estimate, and choose an appointment time that works for your home.
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <a href={bookHref} class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark transition-colors">
+                        Book Now
+                        <ArrowRight className="w-5 h-5" />
+                    </a>
+                    <a href="/pricing" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-white/20 hover:bg-surface transition-colors">
+                        Get Free Quote
+                    </a>
+                    <a href="tel:9543933479" class="inline-flex items-center gap-2 text-white font-semibold px-2 py-3">
+                        <Phone className="w-4 h-4" />
+                        Call Now
+                    </a>
+                </div>
+            </div>
+        </Section>
+    </main>
+
+    <script>
+        const cityGalleries = Array.from(document.querySelectorAll("[data-city-thumb]"));
+        const citySlides = Array.from(document.querySelectorAll("[data-city-slide]"));
+        let activeCityIndex = 0;
+        let cityRotationTimer;
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const updateCityGallery = (index) => {
+            activeCityIndex = index;
+            citySlides.forEach((slide, slideIndex) => {
+                slide.classList.toggle("opacity-100", slideIndex === index);
+                slide.classList.toggle("opacity-0", slideIndex !== index);
+            });
+            cityGalleries.forEach((thumb, thumbIndex) => {
+                thumb.classList.toggle("border-primary", thumbIndex === index);
+                thumb.classList.toggle("shadow-lg", thumbIndex === index);
+                thumb.classList.toggle("shadow-primary/10", thumbIndex === index);
+                thumb.classList.toggle("border-border-light", thumbIndex !== index);
+                thumb.setAttribute("aria-pressed", thumbIndex === index ? "true" : "false");
+            });
+        };
+
+        const stopCityRotation = () => {
+            if (cityRotationTimer) {
+                window.clearInterval(cityRotationTimer);
+                cityRotationTimer = undefined;
+            }
+        };
+
+        const startCityRotation = () => {
+            if (prefersReducedMotion || citySlides.length < 2) return;
+            stopCityRotation();
+            cityRotationTimer = window.setInterval(() => {
+                updateCityGallery((activeCityIndex + 1) % citySlides.length);
+            }, 3400);
+        };
+
+        cityGalleries.forEach((thumb, index) => {
+            thumb.addEventListener("click", () => {
+                updateCityGallery(index);
+                startCityRotation();
+            });
+        });
+
+        updateCityGallery(0);
+        startCityRotation();
+    </script>
+
+    <Footer />
+</Layout>

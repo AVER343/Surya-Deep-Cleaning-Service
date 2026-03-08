@@ -1,0 +1,147 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import BookingForm from "../components/BookingForm";
+import Section from "../components/ui/Section.astro";
+import { CheckCircle2 } from "lucide-react";
+import BOOKING_CATALOG from "../generated/booking-catalog";
+
+const initialServiceSlug = Astro.url.searchParams.get("service") ?? undefined;
+const initialLocationSlug = Astro.url.searchParams.get("location") ?? undefined;
+---
+
+<Layout
+    title="Book House Cleaning | Home Cleaning & Co"
+    description="Schedule your cleaning service online with Home Cleaning & Co. Choose your service, location, date, and add-ons in minutes."
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Book",
+                            item: "https://homecleaningco.com/book",
+                        },
+                    ],
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "FAQPage",
+                    mainEntity: [
+                        {
+                            "@type": "Question",
+                            name: "How fast can I get a booking confirmation?",
+                            acceptedAnswer: {
+                                "@type": "Answer",
+                                text: "Most booking requests are confirmed quickly once your service details are submitted.",
+                            },
+                        },
+                        {
+                            "@type": "Question",
+                            name: "Can I choose a specific service before booking?",
+                            acceptedAnswer: {
+                                "@type": "Answer",
+                                text: "Yes, you can select your preferred cleaning service and adjust your options before checkout.",
+                            },
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="bg-background-mint pt-36 pb-20 md:pt-40 md:pb-24">
+            <div class="grid lg:grid-cols-[1.15fr_0.85fr] gap-10 items-start">
+                <div class="animate-fade-in-up">
+                    <span
+                        class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4"
+                    >
+                        Booking
+                    </span>
+                    <h1
+                        class="text-4xl md:text-5xl font-bold text-secondary tracking-tight leading-tight mb-5"
+                    >
+                        Book Your Cleaning in Minutes
+                    </h1>
+                    <p class="text-text-600 text-lg leading-relaxed mb-8 max-w-2xl">
+                        Choose your service, select your preferred date and
+                        time, and submit your request through one guided form.
+                    </p>
+
+                    <ul class="space-y-3 mb-10">
+                        <li class="flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
+                            <span class="text-text-700"
+                                >Transparent estimates based on your home and
+                                selected service</span
+                            >
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
+                            <span class="text-text-700"
+                                >Flexible scheduling with live time-slot
+                                availability</span
+                            >
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <CheckCircle2 className="w-5 h-5 text-primary mt-0.5" />
+                            <span class="text-text-700"
+                                >Licensed, insured team with 24-hour reclean
+                                guarantee</span
+                            >
+                        </li>
+                    </ul>
+
+                    <div
+                        class="rounded-3xl border border-border-light bg-white p-6 md:p-8 shadow-sm"
+                    >
+                        <h2 class="text-xl font-bold text-secondary mb-3">
+                            Need Help Before You Book?
+                        </h2>
+                        <p class="text-text-600 leading-relaxed mb-4">
+                            Call us at
+                            <a
+                                href="tel:9543933479"
+                                class="text-primary font-semibold hover:underline"
+                                >(954) 393-3479</a
+                            >
+                            for service recommendations or custom scheduling.
+                        </p>
+                        <a
+                            href="/faq"
+                            class="text-sm font-semibold text-secondary hover:text-primary transition-colors"
+                            >View common questions</a
+                        >
+                    </div>
+                </div>
+
+                <div class="animate-fade-in-up delay-100">
+                    <BookingForm
+                        catalog={BOOKING_CATALOG}
+                        initialServiceSlug={initialServiceSlug}
+                        initialLocationSlug={initialLocationSlug}
+                        client:visible
+                    />
+                </div>
+            </div>
+        </Section>
+    </main>
+
+    <Footer />
+</Layout>

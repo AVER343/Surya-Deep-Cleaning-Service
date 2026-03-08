@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
 import { db } from '../../db';
 import { bookings, bookingAddOns } from '../../db/schema';
-import { calculatePrice } from '../../lib/pricing-engine';
-import { v4 as uuidv4 } from 'uuid';
+import BOOKING_CATALOG from '../../generated/booking-catalog';
+import { calculateStaticPrice } from '../../lib/pricing/calculate-static';
 
 export const prerender = false;
 
@@ -19,7 +19,8 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         // 1. Calculate confirmed price on server side
-        const pricingResult = await calculatePrice({
+        const pricingResult = calculateStaticPrice({
+            catalog: BOOKING_CATALOG,
             serviceId: body.serviceId,
             locationId: body.placeId, // Mapping frontend placeId -> locationId
             bedrooms: body.bedrooms || 0,

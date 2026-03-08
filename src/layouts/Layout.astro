@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import "@fontsource/lexend";
 import Analytics from "@vercel/analytics/astro";
+import { ViewTransitions } from "astro:transitions";
 
 interface Props {
 	title: string;
@@ -70,6 +71,7 @@ const absoluteImageURL = new URL(image, Astro.site).href;
 			href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
 			rel="stylesheet"
 		/>
+		<ViewTransitions />
 		<slot name="head" />
 	</head>
 	<body

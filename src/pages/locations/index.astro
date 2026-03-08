@@ -1,0 +1,152 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Section from "../../components/ui/Section.astro";
+import { LOCATION_CONTENT } from "../../content/locations";
+import { SERVICE_CONTENT } from "../../content/services";
+import { ArrowRight, MapPin } from "lucide-react";
+
+const featuredCities = LOCATION_CONTENT;
+---
+
+<Layout
+    title="Cleaning Service Areas | Home Cleaning & Co"
+    description="Browse our service locations and explore cleaning services available across St. Petersburg and nearby Pinellas communities."
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "ItemList",
+                    itemListElement: LOCATION_CONTENT.map((location, index) => ({
+                        "@type": "ListItem",
+                        position: index + 1,
+                        name: `${location.name}, ${location.stateCode}`,
+                        url: `https://homecleaningco.com/locations/${location.slug}`,
+                    })),
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Locations",
+                            item: "https://homecleaningco.com/locations",
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="relative overflow-hidden bg-background-mint pt-36 pb-20 md:pt-40 md:pb-24">
+            <div class="absolute inset-0 pointer-events-none">
+                <div class="absolute top-0 right-[10%] h-64 w-64 rounded-full bg-primary/8 blur-3xl"></div>
+                <div class="absolute bottom-0 left-[6%] h-52 w-52 rounded-full bg-secondary/5 blur-3xl"></div>
+            </div>
+
+            <div class="relative z-10 max-w-3xl mx-auto text-center">
+                <span class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-[0.2em] uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4">
+                    Locations
+                </span>
+                <h1 class="h1-tier-2 font-bold text-secondary mb-6">
+                    Cleaning Coverage Across St. Petersburg and Nearby Communities
+                </h1>
+                <p class="text-text-600 text-lg leading-relaxed max-w-2xl mx-auto">
+                    Explore where we work, then jump into the city page that matches your home so you can compare services, pricing, and booking options.
+                </p>
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {
+                    featuredCities.map((location) => (
+                        <a
+                            href={`/locations/${location.slug}`}
+                            class="group rounded-[1.75rem] border border-border-light bg-background-mint p-6 hover:bg-white hover:border-primary/30 hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                        >
+                            <div class="w-12 h-12 rounded-2xl bg-white border border-border-light text-primary flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-colors">
+                                <MapPin className="w-5 h-5" />
+                            </div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-text-500 mb-2">
+                                Service Area
+                            </p>
+                            <h2 class="text-2xl font-bold text-secondary mb-3">
+                                {location.name}
+                            </h2>
+                            <p class="text-text-600 leading-relaxed mb-5">
+                                {location.intro}
+                            </p>
+                            <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                                View Location
+                                <ArrowRight className="w-3.5 h-3.5" />
+                            </span>
+                        </a>
+                    ))
+                }
+            </div>
+        </Section>
+
+        <Section class="bg-background-mint py-20 md:py-24">
+            <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-10 items-start">
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                        Coverage Statement
+                    </p>
+                    <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                        Local service pages built for faster search and cleaner booking flow
+                    </h2>
+                    <p class="text-text-600 leading-relaxed max-w-2xl">
+                        Each location page links directly into the service-city combinations that matter for local search intent, while still keeping the booking flow tied to real service areas in our system.
+                    </p>
+                </div>
+                <div class="rounded-[2rem] border border-border-light bg-white p-6 md:p-8 shadow-sm">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                        Services Offered
+                    </p>
+                    <div class="flex flex-wrap gap-2">
+                        {
+                            SERVICE_CONTENT.map((service) => (
+                                <a
+                                    href={`/services/${service.slug}`}
+                                    class="inline-flex items-center rounded-full bg-background-mint border border-border-light px-3 py-1.5 text-sm font-medium text-text-600 hover:border-primary/30 hover:text-primary transition-colors"
+                                >
+                                    {service.name}
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-12">
+                <div class="flex flex-wrap justify-center gap-3">
+                <a href="/book" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                    Book Now
+                    <ArrowRight className="w-5 h-5" />
+                </a>
+                <a href="/pricing" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
+                    View Pricing
+                </a>
+                </div>
+            </div>
+        </Section>
+    </main>
+
+    <Footer />
+</Layout>

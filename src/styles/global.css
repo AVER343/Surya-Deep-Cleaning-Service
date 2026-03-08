@@ -104,9 +104,49 @@
   animation-delay: 300ms;
 }
 
+@utility h1-home {
+  font-size: clamp(3.25rem, 6vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+@utility h1-tier-2 {
+  font-size: clamp(2.5rem, 4.2vw, 3.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+@utility h1-tier-3 {
+  font-size: clamp(2.2rem, 3.6vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+}
+
 @layer base {
   body {
     font-family: var(--font-sans);
     @apply bg-background text-text antialiased;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .animate-fade-in-up,
+  .animate-fade-in,
+  .animate-float {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
   }
 }

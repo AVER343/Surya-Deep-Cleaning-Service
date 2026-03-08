@@ -3,8 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
+    "generate:booking-catalog": "tsx scripts/generate-booking-catalog.ts",
+    "dev": "npm run generate:booking-catalog && astro dev",
+    "build": "npm run generate:booking-catalog && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

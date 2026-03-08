@@ -1,71 +1,108 @@
 ---
 import {
-    Sparkles,
     Instagram,
     Facebook,
     Linkedin,
     Mail,
     Phone,
 } from "lucide-react";
+import { LOCATION_CONTENT } from "../content/locations";
+import { SERVICE_CONTENT } from "../content/services";
 
 const currentYear = new Date().getFullYear();
+const supportLinks = [
+    { label: "Reviews", href: "/reviews" },
+    { label: "FAQ", href: "/faq" },
+    { label: "Contact", href: "/contact" },
+    { label: "Book Now", href: "/book" },
+];
 ---
 
 <footer class="bg-secondary text-white pt-20 pb-10">
     <div class="container mx-auto px-4 md:px-8">
-        <div class="flex flex-col items-center text-center mb-12">
-            <!-- Brand -->
-            <div class="flex flex-col items-center gap-6">
-                <a href="/" class="flex items-center gap-2">
+        <div class="grid lg:grid-cols-[1.15fr_0.85fr_0.85fr_0.85fr] gap-10 mb-12">
+            <div>
+                <a href="/" class="inline-flex items-center gap-2 mb-5">
                     <img
                         src="/images/logo.png"
                         alt="Home Cleaning & Co"
                         class="h-12 w-auto object-contain brightness-0 invert"
                     />
                 </a>
-                <p
-                    class="text-white/60 text-lg leading-relaxed max-w-md mx-auto"
-                >
-                    Reliable home services at your fingertips. Professional,
-                    vetted, and always on time.
+                <p class="text-white/65 text-base leading-relaxed max-w-md">
+                    Licensed and insured home cleaning with clear pricing, reliable arrival windows, and flexible booking across our active service areas.
                 </p>
-
-                <address
-                    class="flex flex-col sm:flex-row gap-4 mt-4 w-full justify-center not-italic"
-                >
+                <div class="flex flex-col gap-3 mt-6">
                     <a
                         href="mailto:support@homecleaningco.com"
-                        class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full px-6 py-3 transition-all duration-300 group"
+                        class="inline-flex items-center gap-3 text-white/80 hover:text-white transition-colors"
                     >
-                        <div
-                            class="bg-primary/20 p-2 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-colors"
-                        >
-                            <Mail className="w-5 h-5" />
-                        </div>
-                        <span class="font-medium"
-                            >support@homecleaningco.com</span
-                        >
+                        <Mail className="w-4 h-4 text-primary" />
+                        support@homecleaningco.com
                     </a>
-
                     <a
                         href="tel:9543933479"
-                        class="inline-flex items-center gap-3 bg-white/10 hover:bg-white/20 border border-white/10 rounded-full px-6 py-3 transition-all duration-300 group"
+                        class="inline-flex items-center gap-3 text-white/80 hover:text-white transition-colors"
                     >
-                        <div
-                            class="bg-primary/20 p-2 rounded-full text-primary group-hover:bg-primary group-hover:text-white transition-colors"
-                        >
-                            <Phone className="w-5 h-5" />
-                        </div>
-                        <span class="font-medium">(954) 393-3479</span>
+                        <Phone className="w-4 h-4 text-primary" />
+                        (954) 393-3479
                     </a>
-                </address>
+                </div>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/45 mb-4">
+                    Service Areas
+                </p>
+                <div class="grid gap-2">
+                    {
+                        LOCATION_CONTENT.map((location) => (
+                            <a
+                                href={`/locations/${location.slug}`}
+                                class="text-white/75 hover:text-white transition-colors"
+                            >
+                                {location.name}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/45 mb-4">
+                    Services
+                </p>
+                <div class="grid gap-2">
+                    {
+                        SERVICE_CONTENT.map((service) => (
+                            <a
+                                href={`/services/${service.slug}`}
+                                class="text-white/75 hover:text-white transition-colors"
+                            >
+                                {service.name}
+                            </a>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <div>
+                <p class="text-xs font-bold uppercase tracking-[0.18em] text-white/45 mb-4">
+                    Support
+                </p>
+                <div class="grid gap-2">
+                    {
+                        supportLinks.map((link) => (
+                            <a href={link.href} class="text-white/75 hover:text-white transition-colors">
+                                {link.label}
+                            </a>
+                        ))
+                    }
+                </div>
             </div>
         </div>
 
-        <!-- Bottom Bar -->
-        <div
-            class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6"
-        >
+        <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <p class="text-white/40 text-sm font-medium">
                 © {currentYear} Home Cleaning & Co. All rights reserved.
             </p>

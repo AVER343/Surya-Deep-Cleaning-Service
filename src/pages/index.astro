@@ -9,9 +9,10 @@ import StickyBook from "../components/StickyBook.astro";
 import Areas from "../components/Areas.astro";
 import FAQ from "../components/FAQ.astro";
 import Footer from "../components/Footer.astro";
-import BookingForm from "../components/BookingForm";
 import Section from "../components/ui/Section.astro";
-import { Check } from "lucide-react";
+import { Check, ArrowRight } from "lucide-react";
+import { GLOBAL_FAQS } from "../content/faqs";
+import { LOCATION_CONTENT } from "../content/locations";
 ---
 
 <Layout
@@ -42,17 +43,10 @@ import { Check } from "lucide-react";
 						latitude: 27.7676,
 						longitude: -82.6403,
 					},
-					areaServed: [
-						{ "@type": "City", name: "St. Petersburg" },
-						{ "@type": "City", name: "South Pasadena" },
-						{ "@type": "City", name: "Pinellas Park" },
-						{ "@type": "City", name: "Kenneth City" },
-						{ "@type": "City", name: "Gulfport" },
-						{ "@type": "City", name: "Seminole" },
-						{ "@type": "City", name: "Treasure Island" },
-						{ "@type": "City", name: "Madeira Beach" },
-						{ "@type": "City", name: "Bay Pines" },
-					],
+					areaServed: LOCATION_CONTENT.map((location) => ({
+						"@type": "City",
+						name: location.name,
+					})),
 					openingHoursSpecification: {
 						"@type": "OpeningHoursSpecification",
 						dayOfWeek: [
@@ -138,56 +132,14 @@ import { Check } from "lucide-react";
 				{
 					"@context": "https://schema.org",
 					"@type": "FAQPage",
-					mainEntity: [
-						{
-							"@type": "Question",
-							name: "Do you bring supplies and equipment?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "Yes — we bring our own supplies and standard equipment. You don't need to provide anything. If you prefer we use specific products (or avoid certain ingredients), just let us know in your quote request.",
-							},
+					mainEntity: GLOBAL_FAQS.map((faq) => ({
+						"@type": "Question",
+						name: faq.question,
+						acceptedAnswer: {
+							"@type": "Answer",
+							text: faq.answer,
 						},
-						{
-							"@type": "Question",
-							name: "What are your hours?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "We're available 7am–8pm, Monday through Sunday.",
-							},
-						},
-						{
-							"@type": "Question",
-							name: "What if I'm not satisfied?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "Let us know within 24 hours and we'll come back to re-clean the specific areas you mention.",
-							},
-						},
-						{
-							"@type": "Question",
-							name: "Do I need to be home?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "No — many clients provide access instructions and come back to a spotless home.",
-							},
-						},
-						{
-							"@type": "Question",
-							name: "How do you price cleanings?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "Pricing depends on bedrooms, bathrooms, and the home's condition. Request a quote and we'll confirm an accurate estimate quickly.",
-							},
-						},
-						{
-							"@type": "Question",
-							name: "What's your reschedule or cancellation policy?",
-							acceptedAnswer: {
-								"@type": "Answer",
-								text: "If you need to reschedule, please give us as much notice as possible so we can adjust the schedule and serve everyone on time.",
-							},
-						},
-					],
+					})),
 				},
 				{
 					"@context": "https://schema.org",
@@ -212,14 +164,11 @@ import { Check } from "lucide-react";
 		<StickyBook />
 		<About />
 		<Services />
-		<Testimonials />
-		<Areas />
-		<FAQ />
+		<Testimonials variant="home" />
+		<Areas variant="home" />
+		<FAQ variant="home" />
 
-		<Section
-			id="quote"
-			class="bg-background-mint/30 relative overflow-hidden py-24"
-		>
+		<Section class="bg-background-mint/30 relative overflow-hidden py-24">
 			<!-- Decorative Background Pattern -->
 			<div
 				class="absolute inset-0 opacity-10 pointer-events-none"
@@ -242,9 +191,9 @@ import { Check } from "lucide-react";
 				<p
 					class="text-text-600 text-lg mb-10 max-w-2xl mx-auto leading-relaxed"
 				>
-					Tell us a bit about your home and your cleaning needs. We’ll
-					get back to you with a personalized quote within 24 hours.
-					No hidden fees, just honest pricing.
+					Choose your service, pick your date, and submit your booking
+					in just a few steps. Clear pricing and flexible scheduling,
+					all in one flow.
 				</p>
 
 				<ul
@@ -282,8 +231,14 @@ import { Check } from "lucide-react";
 					</li>
 				</ul>
 
-				<div class="w-full max-w-xl mx-auto text-left">
-					<BookingForm client:visible />
+				<div class="w-full max-w-xl mx-auto">
+					<a
+						href="/book"
+						class="inline-flex items-center justify-center gap-2 bg-primary text-white font-bold px-10 py-4 rounded-full shadow-xl shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300"
+					>
+						Go to Booking
+						<ArrowRight className="w-5 h-5" />
+					</a>
 				</div>
 			</div>
 		</Section>
@@ -291,29 +246,3 @@ import { Check } from "lucide-react";
 
 	<Footer />
 </Layout>
-
-<script>
-	// Scroll Spy to update URL hash
-	const sections = document.querySelectorAll("section[id], div[id='quote']");
-
-	const observer = new IntersectionObserver(
-		(entries) => {
-			entries.forEach((entry) => {
-				if (entry.isIntersecting) {
-					const id = entry.target.getAttribute("id");
-					if (id && id !== "hero") {
-						// Don't hash active for hero usually to keep URL clean, or do if preferred.
-						// Use replaceState to avoid cluttering history stack
-						history.replaceState(null, null, `#${id}`);
-					} else if (id === "hero") {
-						// Optional: Clear hash when back at top
-						history.replaceState(null, null, " ");
-					}
-				}
-			});
-		},
-		{ threshold: 0.5 }, // Update when 50% of the section is visible
-	);
-
-	sections.forEach((section) => observer.observe(section));
-</script>

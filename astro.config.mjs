@@ -11,7 +11,12 @@ export default defineConfig({
   site: 'https://homecleaningco.com',
   output: 'server',
   adapter: vercel(),
-  integrations: [react(), sitemap()],
+  integrations: [
+    react(),
+    sitemap({
+      filter: (page) => !page.endsWith('/areas/') && !page.endsWith('/areas'),
+    }),
+  ],
 
   vite: {
     plugins: [tailwindcss()]

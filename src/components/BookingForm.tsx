@@ -1,9 +1,13 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CalendarIcon, Clock, CheckCircle2, User, Mail, Phone, MapPin, Building2, ArrowRight, ArrowLeft, ChevronDown, Check, ChevronUp, Search, Calculator, Home, Sparkles, Box, Key, Hammer, Repeat } from 'lucide-react';
+import { Clock, CheckCircle2, Mail, Phone, MapPin, Building2, ArrowRight, ChevronDown, Check, ChevronUp, Search, Calculator, Home, Sparkles, Box, Key, Hammer } from 'lucide-react';
 import { format } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { getServiceBySlug } from '../content/services';
+import type { BookingCatalogSnapshot } from '../generated/booking-catalog';
+import { calculateStaticPrice, type StaticPricingResult } from '../lib/pricing/calculate-static';
+import { getPrimaryBookingLocationIdForSeoLocation } from '../lib/catalog';
 
 // Custom Select Component with Search & Sort
 const CustomSelect = ({ options, value, onChange, placeholder, className = "", searchable = false }: any) => {
@@ -148,7 +152,21 @@ const timeSlots = [
     "12:00", "13:00", "14:00", "15:00", "16:00"
 ];
 
-export default function BookingForm() {
+interface BookingFormProps {
+    catalog: BookingCatalogSnapshot;
+    initialServiceSlug?: string;
+    initialServiceId?: string;
+    initialLocationSlug?: string;
+    initialLocationId?: string;
+}
+
+export default function BookingForm({
+    catalog,
+    initialServiceSlug,
+    initialServiceId,
+    initialLocationSlug,
+    initialLocationId,
+}: BookingFormProps) {
     const formTopRef = useRef<HTMLDivElement>(null);
     const [step, setStep] = useState(1);
     const [isSuccess, setIsSuccess] = useState(false);
@@ -159,11 +177,6 @@ export default function BookingForm() {
     const [email, setEmail] = useState('');
     const [phone, setPhone] = useState('');
     const [zipCode, setZipCode] = useState('');
-
-    // Backend Data
-    const [locations, setLocations] = useState<{ id: string; name: string }[]>([]);
-    const [services, setServices] = useState<any[]>([]);
-    const [addOns, setAddOns] = useState<any[]>([]);
 
     // Selections
     const [selectedLocationId, setSelectedLocationId] = useState('');
@@ -187,8 +200,44 @@ export default function BookingForm() {
 
     // Pricing
     const [estimatedPrice, setEstimatedPrice] = useState(0);
-    const [priceBreakdown, setPriceBreakdown] = useState<any>(null);
+    const [priceBreakdown, setPriceBreakdown] = useState<StaticPricingResult | null>(null);
     const [isCalculatingPrice, setIsCalculatingPrice] = useState(false);
+
+    const services = useMemo(() => {
+        const iconMap: Record<string, any> = {
+            'regular-maintenance': Home,
+            'deep-cleaning': Sparkles,
+            'move-in-move-out': Box,
+            'post-construction': Hammer,
+            'airbnb-turnover': Key,
+            'office-cleaning': Building2,
+        };
+
+        return [...catalog.services]
+            .map((service) => ({
+                id: service.id,
+                title: service.name,
+                desc: service.description || 'Professional cleaning service',
+                icon: iconMap[service.slug] || Home,
+                popular: service.slug === 'deep-cleaning' || service.slug === 'regular-maintenance',
+                slug: service.slug,
+            }))
+            .sort((a, b) => a.title.localeCompare(b.title));
+    }, [catalog.services]);
+
+    const locations = useMemo(() => {
+        return [...catalog.locations].sort((a, b) => a.name.localeCompare(b.name));
+    }, [catalog.locations]);
+
+    const addOns = useMemo(() => {
+        return catalog.addOns.map((addOn) => ({
+            id: addOn.id,
+            label: addOn.name,
+            price: addOn.basePrice ?? 0,
+            desc: addOn.description,
+            unitLabel: addOn.unitLabel,
+        }));
+    }, [catalog.addOns]);
 
     // Scroll to top on success
     useEffect(() => {
@@ -197,83 +246,42 @@ export default function BookingForm() {
         }
     }, [isSuccess]);
 
-    // Fetch Locations on Mount
     useEffect(() => {
-        const fetchLocations = async () => {
-            try {
-                const response = await fetch('/api/places');
-                const data = await response.json();
-                if (data.places) {
-                    setLocations(data.places);
-                }
-            } catch (error) {
-                console.error('Failed to fetch locations:', error);
-            }
-        };
-        fetchLocations();
-    }, []);
+        if (services.length === 0) return;
 
-    // Fetch Services & Add-ons on Mount
+        const mappedPrefillServiceId =
+            initialServiceId || getServiceBySlug(initialServiceSlug)?.id;
+        const hasMappedService = Boolean(
+            mappedPrefillServiceId &&
+            services.some((service) => service.id === mappedPrefillServiceId)
+        );
+
+        if (hasMappedService && mappedPrefillServiceId) {
+            setServiceTypeId(mappedPrefillServiceId);
+            return;
+        }
+
+        if (!serviceTypeId) {
+            setServiceTypeId(services[0].id);
+        }
+    }, [initialServiceId, initialServiceSlug, serviceTypeId, services]);
+
     useEffect(() => {
-        const fetchServices = async () => {
-            try {
-                const response = await fetch('/api/services');
-                const data = await response.json();
+        if (locations.length === 0) return;
 
-                // Process services to add icons/descriptions if needed
-                if (data.services) {
-                    const iconMap: Record<string, any> = {
-                        'Regular': Home,
-                        'Deep': Sparkles,
-                        'Move': Box,
-                        'Construction': Hammer,
-                        'Airbnb': Key
-                    };
+        const mappedPrefillLocationId =
+            initialLocationId ||
+            getPrimaryBookingLocationIdForSeoLocation(initialLocationSlug, catalog);
 
-                    const processedServices = data.services.map((s: any) => {
-                        // Find matching icon
-                        let Icon = Home;
-                        for (const key in iconMap) {
-                            if (s.name.includes(key)) Icon = iconMap[key];
-                        }
+        const hasMappedLocation = Boolean(
+            mappedPrefillLocationId &&
+            locations.some((location) => location.id === mappedPrefillLocationId)
+        );
 
-                        return {
-                            id: s.id,
-                            title: s.name,
-                            desc: s.description || 'Professional cleaning service',
-                            icon: Icon,
-                            popular: s.name.includes("Deep") // Hint
-                        };
-                    }).sort((a: any, b: any) => {
-                        // Sort logic: Regular first, then Deep, etc.
-                        if (a.title.includes("Regular")) return -1;
-                        if (b.title.includes("Regular")) return 1;
-                        return 0;
-                    });
-
-                    setServices(processedServices);
-                    // Set default
-                    if (processedServices.length > 0 && !serviceTypeId) {
-                        setServiceTypeId(processedServices[0].id);
-                    }
-                }
-
-                if (data.addOns) {
-                    setAddOns(data.addOns.map((a: any) => ({
-                        id: a.id,
-                        label: a.name,
-                        price: a.basePrice,
-                        desc: a.description,
-                        unitLabel: a.unitLabel
-                    })));
-                }
-
-            } catch (error) {
-                console.error('Failed to fetch services:', error);
-            }
-        };
-        fetchServices();
-    }, []);
+        if (hasMappedLocation && mappedPrefillLocationId) {
+            setSelectedLocationId(mappedPrefillLocationId);
+        }
+    }, [catalog, initialLocationId, initialLocationSlug, locations]);
 
     // Fetch Availability when Date or Location Changes
     useEffect(() => {
@@ -316,7 +324,8 @@ export default function BookingForm() {
 
         setIsCalculatingPrice(true);
         try {
-            const payload = {
+            const data = calculateStaticPrice({
+                catalog,
                 serviceId: serviceTypeId,
                 locationId: selectedLocationId || undefined, // Send if available
                 bedrooms,
@@ -324,21 +333,15 @@ export default function BookingForm() {
                 sqft,
                 frequency,
                 addOnIds: selectedAddons
-            };
-
-            const response = await fetch('/api/pricing/calculate', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
             });
-
-            const data = await response.json();
-            if (data.finalPrice) {
+            if (data.finalPrice >= 0) {
                 setEstimatedPrice(data.finalPrice);
                 setPriceBreakdown(data);
             }
         } catch (error) {
             console.error("Pricing calculation failed:", error);
+            setEstimatedPrice(0);
+            setPriceBreakdown(null);
         } finally {
             setIsCalculatingPrice(false);
         }

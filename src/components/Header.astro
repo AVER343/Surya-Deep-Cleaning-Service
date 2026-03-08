@@ -1,33 +1,44 @@
 ---
-import { Sparkles, Menu, X, Phone } from "lucide-react";
+import { ChevronDown, Phone } from "lucide-react";
+import { SERVICE_CONTENT } from "../content/services";
 
-const links = [
-    { text: "About", href: "#about" },
-    { text: "Services", href: "#services" },
-    { text: "Reviews", href: "#testimonials" },
-    { text: "Areas", href: "#areas" },
-    { text: "Support", href: "#faq" },
+type NavLink = {
+    text: string;
+    href: string;
+    match: "exact" | "prefix";
+};
+
+const phoneHref = "tel:9543933479";
+const ctaLink = { text: "Book Now", href: "/book" };
+const normalizePathname = (pathname: string) =>
+    pathname !== "/" && pathname.endsWith("/")
+        ? pathname.slice(0, -1)
+        : pathname;
+const currentPath = normalizePathname(Astro.url.pathname);
+const isBookPage = currentPath === "/book";
+const isServicesPage =
+    currentPath === "/services" || currentPath.startsWith("/services/");
+
+const links: NavLink[] = [
+    { text: "Home", href: "/", match: "exact" },
+    { text: "Pricing", href: "/pricing", match: "exact" },
+    { text: "Locations", href: "/locations", match: "prefix" },
+    { text: "Contact", href: "/contact", match: "exact" },
 ];
 
-const mobileImages = [
-    {
-        label: "Regular Cleaning",
-        image: "/images/services/regular-maintenance.png",
-    },
-    {
-        label: "Deep Cleaning",
-        image: "/images/services/deep-cleaning.png",
-    },
-];
+const isActive = (link: NavLink) =>
+    link.match === "prefix"
+        ? currentPath === link.href || currentPath.startsWith(`${link.href}/`)
+        : currentPath === link.href;
 ---
 
 <header
-    class="fixed top-0 md:top-6 left-0 right-0 z-50 flex justify-center px-0 md:px-4 pointer-events-none transition-transform duration-300"
+    id="main-header"
+    class="fixed top-0 md:top-6 left-0 right-0 z-50 flex justify-center px-0 md:px-4 pointer-events-none transition-transform duration-300 transform translate-y-0"
 >
     <div
-        class="pointer-events-auto bg-white md:bg-white/95 md:backdrop-blur-xl md:border md:border-secondary/5 md:shadow-2xl md:rounded-full px-4 md:px-6 py-2 flex items-center justify-between gap-2 lg:gap-6 max-w-5xl w-full md:w-auto transition-all duration-500"
+        class="pointer-events-auto bg-white md:bg-white/95 md:backdrop-blur-xl md:border md:border-secondary/5 md:shadow-2xl md:rounded-full px-4 md:px-6 py-2 flex items-center justify-between gap-2 lg:gap-6 max-w-6xl w-full md:w-auto transition-all duration-500"
     >
-        <!-- Logo (Left on mobile, left on desktop) -->
         <a href="/" class="flex items-center gap-2 order-1 shrink-0">
             <img
                 src="/images/logo.png"
@@ -36,13 +47,74 @@ const mobileImages = [
             />
         </a>
 
-        <!-- Desktop Nav -->
         <nav class="hidden md:flex items-center gap-2 order-2">
+            <a
+                href="/"
+                aria-current={currentPath === "/" ? "page" : undefined}
+                class={`px-2 lg:px-4 py-2 text-xs lg:text-sm rounded-full transition-all whitespace-nowrap ${
+                    currentPath === "/"
+                        ? "text-primary bg-primary/10 font-semibold"
+                        : "font-medium text-text-light hover:text-secondary hover:bg-black/5"
+                }`}
+            >
+                Home
+            </a>
+
+            <div class="relative group/services">
+                <a
+                    href="/services"
+                    aria-current={isServicesPage ? "page" : undefined}
+                    class={`inline-flex items-center gap-1 px-2 lg:px-4 py-2 text-xs lg:text-sm rounded-full transition-all whitespace-nowrap ${
+                        isServicesPage
+                            ? "text-primary bg-primary/10 font-semibold"
+                            : "font-medium text-text-light hover:text-secondary hover:bg-black/5"
+                    }`}
+                >
+                    Services
+                    <ChevronDown className="w-3.5 h-3.5" />
+                </a>
+                <div
+                    class="absolute left-1/2 top-full pt-3 -translate-x-1/2 opacity-0 invisible translate-y-2 group-hover/services:opacity-100 group-hover/services:visible group-hover/services:translate-y-0 transition-all duration-200"
+                >
+                    <div
+                        class="w-72 rounded-3xl border border-border-light bg-white shadow-2xl p-3"
+                    >
+                        <a
+                            href="/services"
+                            class="block rounded-2xl px-4 py-3 text-sm font-semibold text-secondary hover:bg-background-mint"
+                        >
+                            Browse all services
+                        </a>
+                        <div class="h-px bg-border-light my-2"></div>
+                        {
+                            SERVICE_CONTENT.map((service) => (
+                                <a
+                                    href={`/services/${service.slug}`}
+                                    class="block rounded-2xl px-4 py-3 hover:bg-background-mint transition-colors"
+                                >
+                                    <p class="text-sm font-semibold text-secondary">
+                                        {service.name}
+                                    </p>
+                                    <p class="text-xs text-text-500 mt-1">
+                                        {service.hero.eyebrow}
+                                    </p>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
+
             {
-                links.map((link) => (
+                links.slice(1).map((link) => (
                     <a
                         href={link.href}
-                        class="px-2 lg:px-4 py-2 text-xs lg:text-sm font-medium text-text-light hover:text-secondary hover:bg-black/5 rounded-full transition-all whitespace-nowrap"
+                        aria-current={isActive(link) ? "page" : undefined}
+                        class={`px-2 lg:px-4 py-2 text-xs lg:text-sm rounded-full transition-all whitespace-nowrap ${
+                            isActive(link)
+                                ? "text-primary bg-primary/10 font-semibold"
+                                : "font-medium text-text-light hover:text-secondary hover:bg-black/5"
+                        }`}
                     >
                         {link.text}
                     </a>
@@ -50,24 +122,27 @@ const mobileImages = [
             }
         </nav>
 
-        <!-- CTA Button -->
         <div class="hidden md:flex items-center gap-2 lg:gap-4 order-3 pl-2">
             <a
-                href="tel:9543933479"
+                href={phoneHref}
                 class="flex items-center gap-2 text-text-light hover:text-primary font-medium transition-colors whitespace-nowrap"
             >
                 <Phone className="w-4 h-4" />
                 <span class="hidden lg:inline">(954) 393-3479</span>
             </a>
             <a
-                href="#quote"
-                class="bg-primary hover:bg-primary-dark text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors shadow-xl hover:shadow-primary/30 ring-2 ring-primary/20 whitespace-nowrap"
+                href={ctaLink.href}
+                aria-current={isBookPage ? "page" : undefined}
+                class={`text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors shadow-xl ring-2 whitespace-nowrap ${
+                    isBookPage
+                        ? "bg-primary-dark ring-primary/30"
+                        : "bg-primary hover:bg-primary-dark hover:shadow-primary/30 ring-primary/20"
+                }`}
             >
-                Book Now
+                {ctaLink.text}
             </a>
         </div>
 
-        <!-- Mobile Menu Button (Animated Hamburger) -->
         <button
             id="menu-btn"
             class="md:hidden p-2 rounded-full transition-colors order-3 hamburger-btn"
@@ -81,7 +156,6 @@ const mobileImages = [
         </button>
     </div>
 
-    <!-- Mobile Nav Dropdown -->
     <div
         id="mobile-menu"
         class="absolute top-full left-0 right-0 mt-0 md:hidden invisible opacity-0 -translate-y-2 transition-all duration-300 ease-in-out z-40 pointer-events-auto"
@@ -89,174 +163,136 @@ const mobileImages = [
         <div
             class="bg-white shadow-lg border-t border-border py-4 px-5 flex flex-col gap-1"
         >
+            <a
+                href="/"
+                aria-current={currentPath === "/" ? "page" : undefined}
+                class={`text-base py-3 px-2 border-b border-border transition-all mobile-link text-center ${
+                    currentPath === "/"
+                        ? "font-bold text-primary bg-primary/5 rounded-xl"
+                        : "font-medium text-secondary/80 hover:text-primary"
+                }`}
+            >
+                Home
+            </a>
+
+            <details
+                class="border-b border-border rounded-xl group/mobile-services"
+            >
+                <summary
+                    class={`list-none flex items-center justify-center gap-2 text-base py-3 px-2 cursor-pointer transition-all ${
+                        isServicesPage
+                            ? "font-bold text-primary bg-primary/5 rounded-xl"
+                            : "font-medium text-secondary/80 hover:text-primary"
+                    }`}
+                >
+                    Services
+                    <ChevronDown
+                        className="w-4 h-4 transition-transform group-open/mobile-services:rotate-180"
+                    />
+                </summary>
+                <div class="pb-3 px-2">
+                    <a
+                        href="/services"
+                        class="mobile-link block rounded-xl bg-background-mint px-4 py-3 text-sm font-semibold text-secondary mb-2 text-center"
+                    >
+                        Browse all services
+                    </a>
+                    <div class="grid gap-2">
+                        {
+                            SERVICE_CONTENT.map((service) => (
+                                <a
+                                    href={`/services/${service.slug}`}
+                                    class="mobile-link block rounded-xl border border-border-light px-4 py-3 text-sm text-secondary text-center hover:border-primary/30 hover:text-primary transition-colors"
+                                >
+                                    {service.name}
+                                </a>
+                            ))
+                        }
+                    </div>
+                </div>
+            </details>
+
             {
-                links.map((link) => (
+                links.slice(1).map((link) => (
                     <a
                         href={link.href}
-                        class="text-base font-medium text-secondary/80 hover:text-primary py-3 px-2 border-b border-border transition-all mobile-link text-center"
+                        aria-current={isActive(link) ? "page" : undefined}
+                        class={`text-base py-3 px-2 border-b border-border transition-all mobile-link text-center ${
+                            isActive(link)
+                                ? "font-bold text-primary bg-primary/5 rounded-xl"
+                                : "font-medium text-secondary/80 hover:text-primary"
+                        }`}
                     >
                         {link.text}
                     </a>
                 ))
             }
             <a
-                href="tel:9543933479"
+                href={phoneHref}
                 class="text-base font-medium text-secondary/80 hover:text-primary py-3 px-2 border-b border-border transition-all mobile-link text-center flex items-center justify-center gap-2"
             >
                 <Phone className="w-4 h-4" />
                 (954) 393-3479
             </a>
             <a
-                href="#quote"
-                class="mobile-link bg-primary text-white text-base font-bold px-6 py-3 rounded-full shadow-lg shadow-primary/30 text-center mt-4 hover:bg-primary-dark transition-colors"
+                href={ctaLink.href}
+                aria-current={isBookPage ? "page" : undefined}
+                class={`mobile-link text-white text-base font-bold px-6 py-3 rounded-full shadow-lg text-center mt-4 transition-colors ${
+                    isBookPage
+                        ? "bg-primary-dark shadow-primary/40"
+                        : "bg-primary shadow-primary/30 hover:bg-primary-dark"
+                }`}
             >
-                Book Now
+                {ctaLink.text}
             </a>
         </div>
     </div>
 </header>
 
 <script>
-    const menuBtn = document.getElementById("menu-btn");
-    const mobileMenu = document.getElementById("mobile-menu");
-    const mobileLinks = document.querySelectorAll(".mobile-link");
-    let isMenuOpen = false;
+    document.addEventListener("astro:page-load", () => {
+        const menuBtn = document.getElementById("menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const mobileLinks = document.querySelectorAll(".mobile-link");
+        let isMenuOpen = false;
 
-    function toggleMenu() {
-        isMenuOpen = !isMenuOpen;
-        menuBtn?.classList.toggle("open", isMenuOpen);
-        if (isMenuOpen) {
-            mobileMenu?.classList.remove(
-                "invisible",
-                "opacity-0",
-                "-translate-y-2",
-            );
-        } else {
-            mobileMenu?.classList.add(
-                "invisible",
-                "opacity-0",
-                "-translate-y-2",
-            );
-        }
-    }
-
-    menuBtn?.addEventListener("click", toggleMenu);
-
-    // Close on link click
-    mobileLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-            if (isMenuOpen) toggleMenu();
-        });
-    });
-
-    // Close on click outside
-    document.addEventListener("click", (e) => {
-        if (
-            isMenuOpen &&
-            mobileMenu &&
-            !mobileMenu.contains(e.target as Node) &&
-            !menuBtn?.contains(e.target as Node)
-        ) {
-            toggleMenu();
-        }
-    });
-
-    // Scroll Spy Logic (scroll-position based for accuracy)
-    const sections = document.querySelectorAll("section[id]");
-    const navLinks = document.querySelectorAll(
-        "nav a[href^='#'], .mobile-link",
-    );
-
-    function clearActiveLinks() {
-        navLinks.forEach((link) => {
-            if (
-                !link.classList.contains("bg-primary") &&
-                !link.classList.contains("text-white")
-            ) {
-                link.classList.remove(
-                    "text-primary",
-                    "bg-primary/10",
-                    "font-semibold",
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            menuBtn?.classList.toggle("open", isMenuOpen);
+            if (isMenuOpen) {
+                mobileMenu?.classList.remove(
+                    "invisible",
+                    "opacity-0",
+                    "-translate-y-2",
                 );
-                link.classList.add(
-                    "text-text-light",
-                    "hover:text-secondary",
-                    "hover:bg-black/5",
-                    "font-medium",
-                );
-            }
-        });
-    }
-
-    function setActiveLink(sectionId: string) {
-        navLinks.forEach((link) => {
-            const href = link.getAttribute("href");
-            if (href === `#${sectionId}`) {
-                if (!link.classList.contains("bg-primary")) {
-                    link.classList.add(
-                        "text-primary",
-                        "bg-primary/10",
-                        "font-semibold",
-                    );
-                    link.classList.remove(
-                        "text-text-light",
-                        "hover:text-secondary",
-                        "hover:bg-black/5",
-                        "font-medium",
-                    );
-                }
             } else {
-                if (
-                    !link.classList.contains("bg-primary") &&
-                    !link.classList.contains("text-white")
-                ) {
-                    link.classList.remove(
-                        "text-primary",
-                        "bg-primary/10",
-                        "font-semibold",
-                    );
-                    link.classList.add(
-                        "text-text-light",
-                        "hover:text-secondary",
-                        "hover:bg-black/5",
-                        "font-medium",
-                    );
-                }
+                mobileMenu?.classList.add(
+                    "invisible",
+                    "opacity-0",
+                    "-translate-y-2",
+                );
             }
-        });
-    }
-
-    function updateScrollSpy() {
-        const scrollY = window.scrollY;
-        const offset = 150; // Account for header height
-
-        // If near top of page (hero area), clear all active states
-        const firstSection = sections[0] as HTMLElement;
-        if (firstSection && scrollY < firstSection.offsetTop - offset) {
-            clearActiveLinks();
-            return;
         }
 
-        let currentSection = "";
-        sections.forEach((section) => {
-            const el = section as HTMLElement;
-            const sectionTop = el.offsetTop - offset;
-            if (scrollY >= sectionTop) {
-                currentSection = el.getAttribute("id") || "";
-            }
+        menuBtn?.addEventListener("click", toggleMenu);
+
+        mobileLinks.forEach((link) => {
+            link.addEventListener("click", () => {
+                if (isMenuOpen) toggleMenu();
+            });
         });
 
-        if (currentSection) {
-            setActiveLink(currentSection);
-        } else {
-            clearActiveLinks();
-        }
-    }
-
-    window.addEventListener("scroll", updateScrollSpy, { passive: true });
-    updateScrollSpy(); // Run once on load
-
-    // Navbar is always visible — no hide on scroll
+        document.addEventListener("click", (e) => {
+            if (
+                isMenuOpen &&
+                mobileMenu &&
+                !mobileMenu.contains(e.target as Node) &&
+                !menuBtn?.contains(e.target as Node)
+            ) {
+                toggleMenu();
+            }
+        });
+    });
 </script>
 
 <style>
@@ -279,18 +315,15 @@ const mobileImages = [
         transform-origin: center;
     }
 
-    /* Open state: top bar rotates down */
     .hamburger-btn.open .hamburger-icon span:nth-child(1) {
         transform: translateY(7px) rotate(45deg);
     }
 
-    /* Open state: middle bar fades out */
     .hamburger-btn.open .hamburger-icon span:nth-child(2) {
         opacity: 0;
         transform: scaleX(0);
     }
 
-    /* Open state: bottom bar rotates up */
     .hamburger-btn.open .hamburger-icon span:nth-child(3) {
         transform: translateY(-7px) rotate(-45deg);
     }

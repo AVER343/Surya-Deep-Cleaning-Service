@@ -1,47 +1,53 @@
 ---
 import Section from "./ui/Section.astro";
-import { MapPin, Navigation } from "lucide-react";
+import { MapPin } from "lucide-react";
+import { SERVICE_AREAS } from "../content/areas";
+import { HOMEPAGE_TEASERS } from "../content/homepage";
 
-const areas = [
-    { name: "St. Petersburg", primary: true },
-    { name: "South Pasadena", primary: false },
-    { name: "Pinellas Park", primary: false },
-    { name: "Kenneth City", primary: false },
-    { name: "Lealman", primary: false },
-    { name: "West Lealman", primary: false },
-    { name: "Gulfport", primary: false },
-    { name: "Seminole", primary: false },
-    { name: "Treasure Island", primary: false },
-    { name: "Madeira Beach", primary: false },
-    { name: "Bay Pines", primary: false },
-];
+interface Props {
+    variant?: "home" | "full";
+    showHeader?: boolean;
+}
+
+const { variant = "home", showHeader = true } = Astro.props as Props;
+const isHome = variant === "home";
+const areas = isHome ? SERVICE_AREAS.slice(0, 6) : SERVICE_AREAS;
+const sectionClass = showHeader
+    ? "bg-background-mint py-16 md:py-24"
+    : "bg-background-mint pt-4 pb-16 md:pt-8 md:pb-20";
 ---
 
-<Section id="areas" class="bg-background-mint py-16 md:py-24">
+<Section id="areas" class={sectionClass}>
     <div class="max-w-7xl mx-auto px-4">
-        <!-- Centered Header -->
-        <div class="text-center mb-16">
-            <span
-                class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4"
-                >Service Coverage</span
-            >
-            <h2
-                class="text-4xl md:text-5xl font-bold text-secondary mb-4 font-sans tracking-tight"
-            >
-                Areas We <span class="text-primary">Serve</span>
-            </h2>
-            <p class="text-text-light text-lg max-w-lg mx-auto">
-                Based in St. Petersburg and proudly serving nearby communities.
-            </p>
-        </div>
+        {showHeader && (
+            <div class="text-center mb-16">
+                <span
+                    class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-wider uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4"
+                    >Service Coverage</span
+                >
+                <h2
+                    class="text-4xl md:text-5xl font-bold text-secondary mb-4 font-sans tracking-tight"
+                >
+                    Areas We <span class="text-primary">Serve</span>
+                </h2>
+                <p class="text-text-light text-lg max-w-lg mx-auto">
+                    {
+                        isHome
+                            ? HOMEPAGE_TEASERS.areas.description
+                            : "Based in St. Petersburg and proudly serving nearby communities."
+                    }
+                </p>
+            </div>
+        )}
 
         <!-- Location Tags -->
         <div class="max-w-4xl mx-auto">
             <div class="flex flex-wrap justify-center gap-3">
                 {
                     areas.map((area) => (
-                        <div
-                            class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all duration-300 group cursor-default
+                        <a
+                            href={`/locations/${area.slug}`}
+                            class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-full border transition-all duration-300 group cursor-pointer
                             ${
                                 area.primary
                                     ? "bg-white border-primary shadow-md transform scale-105"
@@ -61,10 +67,21 @@ const areas = [
                                     HQ
                                 </span>
                             )}
-                        </div>
+                        </a>
                     ))
                 }
             </div>
         </div>
+
+        {isHome && (
+            <div class="text-center mt-12">
+                <a
+                    href={HOMEPAGE_TEASERS.areas.href}
+                    class="inline-flex items-center gap-2 bg-white text-secondary font-bold px-7 py-3 rounded-full border border-border-light hover:bg-surface transition-colors"
+                >
+                    {HOMEPAGE_TEASERS.areas.cta}
+                </a>
+            </div>
+        )}
     </div>
 </Section>

@@ -1,0 +1,234 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import Section from "../../components/ui/Section.astro";
+import { GLOBAL_FAQS } from "../../content/faqs";
+import { LOCATION_CONTENT } from "../../content/locations";
+import { getLocationSeoModel } from "../../lib/seo/get-location-seo-model";
+import { formatUsd } from "../../lib/catalog";
+import { ArrowRight } from "lucide-react";
+
+export const prerender = true;
+
+export function getStaticPaths() {
+    return LOCATION_CONTENT.map((location) => ({
+        params: { city: location.slug },
+    }));
+}
+
+const seoModel = getLocationSeoModel(Astro.params.city);
+
+if (!seoModel) {
+    throw new Error(`Unknown location slug: ${Astro.params.city}`);
+}
+
+const { location, services } = seoModel;
+const faqItems = GLOBAL_FAQS.slice(0, 3);
+---
+
+<Layout
+    title={location.metaTitle}
+    description={location.metaDescription}
+>
+    <Fragment slot="head">
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify([
+                {
+                    "@context": "https://schema.org",
+                    "@type": "LocalBusiness",
+                    name: "Home Cleaning & Co",
+                    url: `https://homecleaningco.com/locations/${location.slug}`,
+                    telephone: "+19543933479",
+                    areaServed: {
+                        "@type": "City",
+                        name: location.name,
+                    },
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "Service",
+                    name: `House Cleaning in ${location.name}`,
+                    areaServed: {
+                        "@type": "City",
+                        name: location.name,
+                    },
+                    provider: {
+                        "@type": "LocalBusiness",
+                        name: "Home Cleaning & Co",
+                    },
+                },
+                {
+                    "@context": "https://schema.org",
+                    "@type": "BreadcrumbList",
+                    itemListElement: [
+                        {
+                            "@type": "ListItem",
+                            position: 1,
+                            name: "Home",
+                            item: "https://homecleaningco.com/",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 2,
+                            name: "Locations",
+                            item: "https://homecleaningco.com/locations",
+                        },
+                        {
+                            "@type": "ListItem",
+                            position: 3,
+                            name: location.name,
+                            item: `https://homecleaningco.com/locations/${location.slug}`,
+                        },
+                    ],
+                },
+            ])}
+        />
+    </Fragment>
+
+    <Header />
+
+    <main>
+        <Section class="bg-background-mint pt-36 pb-20 md:pt-40 md:pb-24">
+            <div class="max-w-3xl mx-auto text-center">
+                <span class="inline-flex items-center gap-1.5 text-text-600 font-semibold tracking-[0.2em] uppercase text-xs bg-white border border-border-light px-4 py-1.5 rounded-full mb-4">
+                    Local Coverage
+                </span>
+                <h1 class="h1-tier-2 font-bold text-secondary mb-6">
+                    House Cleaning in {location.name}, {location.stateCode}
+                </h1>
+                <p class="text-text-600 text-lg leading-relaxed mb-6">
+                    {location.intro}
+                </p>
+                <div class="flex flex-wrap justify-center gap-3">
+                    <a href="/book" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                        Book Now
+                        <ArrowRight className="w-5 h-5" />
+                    </a>
+                    <a href="/pricing" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
+                        View Pricing
+                    </a>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="grid lg:grid-cols-[1.05fr_0.95fr] gap-10 items-start">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                        Cleaning Services Available in {location.name}
+                    </h2>
+                    <p class="text-text-600 leading-relaxed mb-8">
+                        {location.coverageCopy}
+                    </p>
+                    <div class="grid sm:grid-cols-2 gap-4">
+                        {
+                            location.neighborhoods.map((neighborhood) => (
+                                <div class="rounded-2xl border border-border-light bg-background-mint px-4 py-4 text-sm font-medium text-secondary">
+                                    {neighborhood}
+                                </div>
+                            ))
+                        }
+                    </div>
+                </div>
+                <div class="rounded-[2rem] border border-border-light bg-background-mint p-6 md:p-8">
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                        Nearby Areas
+                    </p>
+                    <div class="flex flex-wrap gap-2 mb-8">
+                        {
+                            location.nearbyAreas.map((area) => (
+                                <span class="inline-flex items-center rounded-full bg-white border border-border-light px-3 py-1.5 text-sm text-text-600">
+                                    {area}
+                                </span>
+                            ))
+                        }
+                    </div>
+                    <p class="text-xs font-bold uppercase tracking-[0.18em] text-text-500 mb-3">
+                        Need a specific service?
+                    </p>
+                    <p class="text-text-600 leading-relaxed mb-4">
+                        Jump straight into the service + location page below to compare pricing anchors and booking options.
+                    </p>
+                    <a href="/services" class="inline-flex items-center gap-2 text-primary font-semibold">
+                        Browse services
+                        <ArrowRight className="w-4 h-4" />
+                    </a>
+                </div>
+            </div>
+        </Section>
+
+        <Section class="bg-background-mint py-20 md:py-24">
+            <div class="flex items-end justify-between gap-6 mb-8">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-3">
+                        Services in {location.name}
+                    </h2>
+                    <p class="text-text-600">
+                        Select the page that matches both your service need and your location.
+                    </p>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {
+                    services.map(({ service, startingPrice }) => (
+                        <article class="rounded-[1.75rem] border border-border-light bg-white p-6 shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all h-full flex flex-col">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-text-500 mb-3">
+                                Starting at {formatUsd(startingPrice)}
+                            </p>
+                            <h3 class="text-2xl font-bold text-secondary mb-3">
+                                {service.name}
+                            </h3>
+                            <p class="text-text-600 leading-relaxed mb-6">
+                                {service.shortDescription}
+                            </p>
+                            <div class="mt-auto flex flex-wrap gap-3">
+                                <a href={`/services/${service.slug}/${location.slug}`} class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
+                                    View Local Page
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                </a>
+                                <a href={`/services/${service.slug}`} class="inline-flex items-center gap-1.5 text-sm font-semibold text-secondary hover:text-primary transition-colors">
+                                    View Service Overview
+                                </a>
+                            </div>
+                        </article>
+                    ))
+                }
+            </div>
+        </Section>
+
+        <Section class="bg-white py-20 md:py-24">
+            <div class="max-w-3xl mx-auto text-center mb-10">
+                <h2 class="text-3xl md:text-4xl font-bold text-secondary mb-4">
+                    FAQ for {location.name} Clients
+                </h2>
+                <p class="text-text-600 text-lg">
+                    {location.faqIntro}
+                </p>
+            </div>
+            <div class="max-w-3xl mx-auto space-y-4">
+                {
+                    faqItems.map((faq) => (
+                        <details class="group bg-background-mint rounded-2xl border border-border-light p-6 transition-shadow hover:shadow-md">
+                            <summary class="cursor-pointer list-none font-bold text-secondary pr-8 relative">
+                                {faq.question}
+                                <span class="absolute right-0 top-0 text-primary transition-transform group-open:rotate-45">+</span>
+                            </summary>
+                            <p class="mt-4 text-text-600 leading-relaxed">{faq.answer}</p>
+                        </details>
+                    ))
+                }
+            </div>
+
+            <div class="text-center mt-12">
+                <a href="/contact" class="inline-flex items-center gap-2 bg-primary text-white font-bold px-8 py-3.5 rounded-full shadow-lg shadow-primary/30 hover:bg-primary-dark hover:-translate-y-0.5 transition-all duration-300">
+                    Get Free Quote
+                    <ArrowRight className="w-5 h-5" />
+                </a>
+            </div>
+        </Section>
+    </main>
+
+    <Footer />
+</Layout>
