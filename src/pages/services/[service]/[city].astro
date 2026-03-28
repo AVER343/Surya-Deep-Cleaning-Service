@@ -6,7 +6,7 @@ import Section from "../../../components/ui/Section.astro";
 import { LOCATION_CONTENT, getLocationBySlug } from "../../../content/locations";
 import { SERVICE_CONTENT, getServiceBySlug } from "../../../content/services";
 import {
-    formatUsd,
+    formatInr,
     getAvailableCitiesForService,
     getAvailableServicesForLocation,
     getBookingLocationIdsForSeoLocation,
@@ -65,7 +65,7 @@ const locationPath = `/locations/${location.slug}`;
                     "@type": "LocalBusiness",
                     name: "Home Cleaning & Co",
                     url: `https://homecleaningco.com/services/${service.slug}/${location.slug}`,
-                    telephone: "+19543933479",
+                    telephone: "+919625140784",
                     areaServed: {
                         "@type": "City",
                         name: location.name,
@@ -84,7 +84,7 @@ const locationPath = `/locations/${location.slug}`;
                     provider: {
                         "@type": "LocalBusiness",
                         name: "Home Cleaning & Co",
-                        telephone: "+19543933479",
+                        telephone: "+919625140784",
                     },
                     offers: {
                         "@type": "Offer",
@@ -166,7 +166,7 @@ const locationPath = `/locations/${location.slug}`;
                             Starting At
                         </p>
                         <p class="text-3xl font-bold text-secondary mb-2">
-                            {formatUsd(startingPrice)}
+                            {formatInr(startingPrice)}
                         </p>
                         <p class="text-sm text-text-600 leading-relaxed">
                             {service.pricingNote}
@@ -181,7 +181,7 @@ const locationPath = `/locations/${location.slug}`;
                         <a href="/contact" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-border-light hover:bg-surface transition-colors">
                             Get Free Quote
                         </a>
-                        <a href="tel:9543933479" class="inline-flex items-center gap-2 text-secondary font-semibold px-2 py-3">
+                        <a href="tel:+919625140784" class="inline-flex items-center gap-2 text-secondary font-semibold px-2 py-3">
                             <Phone className="w-4 h-4" />
                             Call Now
                         </a>
@@ -378,7 +378,7 @@ const locationPath = `/locations/${location.slug}`;
                                     <div class="flex items-center justify-between gap-4">
                                         <div>
                                             <p class="font-bold text-secondary">{relatedService.name}</p>
-                                            <p class="text-sm text-text-600">Starting at {formatUsd(relatedPrice)}</p>
+                                            <p class="text-sm text-text-600">Starting at {formatInr(relatedPrice)}</p>
                                         </div>
                                         <ArrowRight className="w-4 h-4 text-primary shrink-0" />
                                     </div>
@@ -402,7 +402,7 @@ const locationPath = `/locations/${location.slug}`;
                                     <div class="flex items-center justify-between gap-4">
                                         <div>
                                             <p class="font-bold text-secondary">{relatedLocation.name}, {relatedLocation.stateCode}</p>
-                                            <p class="text-sm text-text-600">Starting at {formatUsd(relatedPrice)}</p>
+                                            <p class="text-sm text-text-600">Starting at {formatInr(relatedPrice)}</p>
                                         </div>
                                         <ArrowRight className="w-4 h-4 text-primary shrink-0" />
                                     </div>
@@ -431,7 +431,7 @@ const locationPath = `/locations/${location.slug}`;
                     <a href="/pricing" class="inline-flex items-center gap-2 bg-white text-secondary font-semibold px-6 py-3.5 rounded-full border border-white/20 hover:bg-surface transition-colors">
                         Get Free Quote
                     </a>
-                    <a href="tel:9543933479" class="inline-flex items-center gap-2 text-white font-semibold px-2 py-3">
+                    <a href="tel:+919625140784" class="inline-flex items-center gap-2 text-white font-semibold px-2 py-3">
                         <Phone className="w-4 h-4" />
                         Call Now
                     </a>

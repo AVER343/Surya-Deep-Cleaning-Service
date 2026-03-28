@@ -8,7 +8,7 @@ type NavLink = {
     match: "exact" | "prefix";
 };
 
-const phoneHref = "tel:9543933479";
+const phoneHref = "tel:9625140784";
 const ctaLink = { text: "Book Now", href: "/book" };
 const normalizePathname = (pathname: string) =>
     pathname !== "/" && pathname.endsWith("/")
@@ -42,7 +42,7 @@ const isActive = (link: NavLink) =>
         <a href="/" class="flex items-center gap-2 order-1 shrink-0">
             <img
                 src="/images/logo.png"
-                alt="Home Cleaning & Co"
+                alt="Surya Deep Cleaning Service"
                 class="h-9 md:h-10 w-auto object-contain"
             />
         </a>
@@ -128,18 +128,7 @@ const isActive = (link: NavLink) =>
                 class="flex items-center gap-2 text-text-light hover:text-primary font-medium transition-colors whitespace-nowrap"
             >
                 <Phone className="w-4 h-4" />
-                <span class="hidden lg:inline">(954) 393-3479</span>
-            </a>
-            <a
-                href={ctaLink.href}
-                aria-current={isBookPage ? "page" : undefined}
-                class={`text-white text-sm font-bold px-6 py-2.5 rounded-full transition-colors shadow-xl ring-2 whitespace-nowrap ${
-                    isBookPage
-                        ? "bg-primary-dark ring-primary/30"
-                        : "bg-primary hover:bg-primary-dark hover:shadow-primary/30 ring-primary/20"
-                }`}
-            >
-                {ctaLink.text}
+                <span class="hidden lg:inline">+91 96251 40784</span>
             </a>
         </div>
 
@@ -232,18 +221,7 @@ const isActive = (link: NavLink) =>
                 class="text-base font-medium text-secondary/80 hover:text-primary py-3 px-2 border-b border-border transition-all mobile-link text-center flex items-center justify-center gap-2"
             >
                 <Phone className="w-4 h-4" />
-                (954) 393-3479
-            </a>
-            <a
-                href={ctaLink.href}
-                aria-current={isBookPage ? "page" : undefined}
-                class={`mobile-link text-white text-base font-bold px-6 py-3 rounded-full shadow-lg text-center mt-4 transition-colors ${
-                    isBookPage
-                        ? "bg-primary-dark shadow-primary/40"
-                        : "bg-primary shadow-primary/30 hover:bg-primary-dark"
-                }`}
-            >
-                {ctaLink.text}
+                +91 96251 40784
             </a>
         </div>
     </div>

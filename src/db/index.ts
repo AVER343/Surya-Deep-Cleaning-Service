@@ -6,11 +6,12 @@ import { config } from 'dotenv';
 
 config(); // Load .env file
 
-const connectionString = (import.meta && import.meta.env && import.meta.env.DATABASE_URL) || process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL;
 
 if (!connectionString) {
-    throw new Error('DATABASE_URL is not set');
+    console.warn('DATABASE_URL is not set. Mocking DB connection.');
 }
 
-const sql = neon(connectionString);
-export const db = drizzle(sql, { schema });
+export const db = connectionString 
+    ? drizzle(neon(connectionString), { schema })
+    : ({} as any);

@@ -6,7 +6,7 @@ import Section from "../../../components/ui/Section.astro";
 import { SERVICE_CONTENT } from "../../../content/services";
 import { getServiceSeoModel } from "../../../lib/seo/get-service-seo-model";
 import { getImageAlt } from "../../../lib/seo/get-image-alt";
-import { formatUsd } from "../../../lib/catalog";
+import { formatInr } from "../../../lib/catalog";
 import { ArrowRight, CheckCircle2, Phone } from "lucide-react";
 
 export const prerender = true;
@@ -31,7 +31,7 @@ const galleryCaptions = serviceGallery.map(
     (_, index) => service.heroHighlights[index] ?? service.heroHighlights[0],
 );
 const serviceImage = new URL(serviceGallery[0], Astro.site).href;
-const formattedStartingPrice = formatUsd(startingPrice);
+const formattedStartingPrice = formatInr(startingPrice);
 ---
 
 <Layout
@@ -52,7 +52,7 @@ const formattedStartingPrice = formatUsd(startingPrice);
                         "@type": "LocalBusiness",
                         name: "Home Cleaning & Co",
                         url: "https://homecleaningco.com",
-                        telephone: "+19543933479",
+                        telephone: "+919625140784",
                     },
                     areaServed: {
                         "@type": "City",
@@ -159,7 +159,7 @@ const formattedStartingPrice = formatUsd(startingPrice);
                             Get Free Quote
                         </a>
                         <a
-                            href="tel:9543933479"
+                            href="tel:+919625140784"
                             class="inline-flex items-center gap-2 text-secondary font-semibold px-2 py-3"
                         >
                             <Phone className="w-4 h-4" />
@@ -430,7 +430,7 @@ const formattedStartingPrice = formatUsd(startingPrice);
                                         {service.name}
                                     </p>
                                     <p class="text-sm text-text-600 mb-4">
-                                        Starting at {formatUsd(cityPrice)}
+                                        Starting at {formatInr(cityPrice)}
                                     </p>
                                     <span class="inline-flex items-center gap-1.5 text-sm font-semibold text-primary">
                                         View Local Page

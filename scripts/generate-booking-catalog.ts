@@ -12,8 +12,35 @@ import {
 import { LOCATION_CONTENT } from "../src/content/locations";
 import { SERVICE_CONTENT } from "../src/content/services";
 
+import { mkdirSync, writeFileSync } from "node:fs";
+
 if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not set. Cannot generate booking catalog.");
+    console.warn("DATABASE_URL is not set. Generating a dummy booking catalog for demo.");
+    const dummySnapshot: Snapshot = {
+        services: SERVICE_CONTENT.map((s) => ({
+            id: s.id,
+            slug: s.slug,
+            name: s.name,
+            description: s.shortDescription,
+            globalStartingPrice: 99,
+        })),
+        locations: LOCATION_CONTENT.map((l, i) => ({
+            id: String(i),
+            name: l.name,
+        })),
+        addOns: [],
+        addOnPricingRules: [],
+        basePricing: [],
+        generatedAt: new Date().toISOString()
+    };
+    
+    const output = `// AUTO-GENERATED (DUMMY) by scripts/generate-booking-catalog.ts. Do not edit by hand.\n\nexport interface BookingCatalogSnapshot {\n    services: Array<{\n        id: string;\n        slug: string;\n        name: string;\n        description: string;\n        globalStartingPrice: number;\n    }>;\n    locations: Array<{\n        id: string;\n        name: string;\n    }>;\n    addOns: Array<{\n        id: string;\n        name: string;\n        description: string;\n        basePrice: number | null;\n        unitLabel: string | null;\n        priceType: "flat" | "per_unit" | "range" | "rule_based";\n    }>;\n    addOnPricingRules: Array<{\n        id: string;\n        addOnId: string;\n        minBedrooms: number | null;\n        maxBedrooms: number | null;\n        minSqft: number | null;\n        maxSqft: number | null;\n        adjustmentType: "percentage" | "flat";\n        flatAmount: number | null;\n        percentage: number | null;\n    }>;\n    basePricing: Array<{\n        serviceId: string;\n        locationId: string | null;\n        bedrooms: number;\n        bathrooms: number;\n        frequency: "one_time" | "weekly" | "bi_weekly" | "monthly";\n        basePrice: number;\n    }>;\n    generatedAt: string;\n}\n\nexport const BOOKING_CATALOG: BookingCatalogSnapshot = ${JSON.stringify(dummySnapshot, null, 4)};\n\nexport default BOOKING_CATALOG;\n`;
+
+    const outputPath = path.resolve(process.cwd(), "src/generated/booking-catalog.ts");
+    mkdirSync(path.dirname(outputPath), { recursive: true });
+    writeFileSync(outputPath, output, "utf8");
+    console.log(`Generated dummy booking catalog: ${outputPath}`);
+    process.exit(0);
 }
 
 type Snapshot = {

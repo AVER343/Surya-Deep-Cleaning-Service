@@ -5,7 +5,7 @@ import Footer from "../components/Footer.astro";
 import Section from "../components/ui/Section.astro";
 import BOOKING_CATALOG from "../generated/booking-catalog";
 import { getServiceById } from "../content/services";
-import { formatUsd } from "../lib/catalog";
+import { formatInr } from "../lib/catalog";
 import { ArrowRight } from "lucide-react";
 
 const pricingCards = BOOKING_CATALOG.services
@@ -91,7 +91,7 @@ const pricingCards = BOOKING_CATALOG.services
                                 {service.name}
                             </h2>
                             <p class="text-3xl font-bold text-primary mb-4">
-                                Starting at {formatUsd(startingPrice)}
+                                Starting at {formatInr(startingPrice)}
                             </p>
                             <p class="text-text-600 leading-relaxed mb-6">
                                 {service.pricingNote}

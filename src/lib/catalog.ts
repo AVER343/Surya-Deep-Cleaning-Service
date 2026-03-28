@@ -2,11 +2,11 @@ import { LOCATION_CONTENT, getLocationBySlug, type LocationContent } from "../co
 import { getServiceBySlug } from "../content/services";
 import BOOKING_CATALOG, { type BookingCatalogSnapshot } from "../generated/booking-catalog";
 
-export function formatUsd(value?: number | null): string {
+export function formatInr(value?: number | null): string {
     if (typeof value !== "number" || Number.isNaN(value)) return "Custom";
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
         style: "currency",
-        currency: "USD",
+        currency: "INR",
         maximumFractionDigits: value % 1 === 0 ? 0 : 2,
     }).format(value);
 }

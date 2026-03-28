@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "generate:booking-catalog": "tsx scripts/generate-booking-catalog.ts",
+    "generate:justdial-surya": "node --import tsx scripts/generate-justdial-listing.ts",
     "dev": "npm run generate:booking-catalog && astro dev",
     "build": "npm run generate:booking-catalog && astro build",
     "preview": "astro preview",
